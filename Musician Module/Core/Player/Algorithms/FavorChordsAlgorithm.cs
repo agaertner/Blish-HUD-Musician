@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Threading;
 using Blish_HUD;
 using Nekres.Musician.Core.Domain;
+using Nekres.Musician.Core.Instrument;
 
 namespace Nekres.Musician.Core.Player.Algorithms
 {
@@ -10,7 +11,7 @@ namespace Nekres.Musician.Core.Player.Algorithms
     {
         private bool Abort = false;
         public void Dispose() { Abort = true; }
-        public void Play(Instrument instrument, Metronome metronomeMark, ChordOffset[] melody) {
+        public void Play(BaseInstrument instrument, Metronome metronomeMark, ChordOffset[] melody) {
             var stopwatch = new Stopwatch();
             stopwatch.Start();
 

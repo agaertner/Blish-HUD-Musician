@@ -1,5 +1,5 @@
-﻿using System.Collections.Generic;
-using Nekres.Musician.Core.Domain;
+﻿using Nekres.Musician.Core.Domain;
+using System.Collections.Generic;
 
 namespace Nekres.Musician.Core.Instrument.Lute
 {
@@ -28,36 +28,28 @@ namespace Nekres.Musician.Core.Instrument.Lute
 
         private static readonly Dictionary<string, LuteNote> Map = new Dictionary<string, LuteNote>
         {
-            {$"{Note.Keys.None}{Note.Octaves.None}", new LuteNote(Keys.None, Octaves.None)},
-
-            // Low Octave
-            {$"{Note.Keys.C}{Note.Octaves.Lowest}", new LuteNote(Keys.Note1, Octaves.Low)},
-            {$"{Note.Keys.D}{Note.Octaves.Lowest}", new LuteNote(Keys.Note2, Octaves.Low)},
-            {$"{Note.Keys.E}{Note.Octaves.Lowest}", new LuteNote(Keys.Note3, Octaves.Low)},
-            {$"{Note.Keys.F}{Note.Octaves.Lowest}", new LuteNote(Keys.Note4, Octaves.Low)},
-            {$"{Note.Keys.G}{Note.Octaves.Lowest}", new LuteNote(Keys.Note5, Octaves.Low)},
-            {$"{Note.Keys.A}{Note.Octaves.Lowest}", new LuteNote(Keys.Note6, Octaves.Low)},
-            {$"{Note.Keys.B}{Note.Octaves.Lowest}", new LuteNote(Keys.Note7, Octaves.Low)},
-            //{$"{Note.Keys.C}{Note.Octaves.Low}", new LuteNote(Keys.Note8, Octaves.Low)}, // Note to optimize at runtime.
-            // Middle Octave
-            {$"{Note.Keys.C}{Note.Octaves.Low}", new LuteNote(Keys.Note1, Octaves.Middle)},
-            {$"{Note.Keys.D}{Note.Octaves.Low}", new LuteNote(Keys.Note2, Octaves.Middle)},
-            {$"{Note.Keys.E}{Note.Octaves.Low}", new LuteNote(Keys.Note3, Octaves.Middle)},
-            {$"{Note.Keys.F}{Note.Octaves.Low}", new LuteNote(Keys.Note4, Octaves.Middle)},
-            {$"{Note.Keys.G}{Note.Octaves.Low}", new LuteNote(Keys.Note5, Octaves.Middle)},
-            {$"{Note.Keys.A}{Note.Octaves.Low}", new LuteNote(Keys.Note6, Octaves.Middle)},
-            {$"{Note.Keys.B}{Note.Octaves.Low}", new LuteNote(Keys.Note7, Octaves.Middle)},
-
-            //{$"{Note.Keys.C}{Note.Octaves.Middle}", new LuteNote(Keys.Note8, Octaves.Middle)}, // Note to optimize at runtime.
-            // High Octave
-            {$"{Note.Keys.C}{Note.Octaves.Middle}", new LuteNote(Keys.Note1, Octaves.High)},
-            {$"{Note.Keys.D}{Note.Octaves.Middle}", new LuteNote(Keys.Note2, Octaves.High)},
-            {$"{Note.Keys.E}{Note.Octaves.Middle}", new LuteNote(Keys.Note3, Octaves.High)},
-            {$"{Note.Keys.F}{Note.Octaves.Middle}", new LuteNote(Keys.Note4, Octaves.High)},
-            {$"{Note.Keys.G}{Note.Octaves.Middle}", new LuteNote(Keys.Note5, Octaves.High)},
-            {$"{Note.Keys.A}{Note.Octaves.Middle}", new LuteNote(Keys.Note6, Octaves.High)},
-            {$"{Note.Keys.B}{Note.Octaves.Middle}", new LuteNote(Keys.Note7, Octaves.High)},
-            {$"{Note.Keys.C}{Note.Octaves.High}", new LuteNote(Keys.Note8, Octaves.High)}
+            {$"{Domain.Note.C}{Domain.Octave.Lowest}", new LuteNote(Keys.Note1, Octaves.Low)},
+            {$"{Domain.Note.D}{Domain.Octave.Lowest}", new LuteNote(Keys.Note2, Octaves.Low)},
+            {$"{Domain.Note.E}{Domain.Octave.Lowest}", new LuteNote(Keys.Note3, Octaves.Low)},
+            {$"{Domain.Note.F}{Domain.Octave.Lowest}", new LuteNote(Keys.Note4, Octaves.Low)},
+            {$"{Domain.Note.G}{Domain.Octave.Lowest}", new LuteNote(Keys.Note5, Octaves.Low)},
+            {$"{Domain.Note.A}{Domain.Octave.Lowest}", new LuteNote(Keys.Note6, Octaves.Low)},
+            {$"{Domain.Note.B}{Domain.Octave.Lowest}", new LuteNote(Keys.Note7, Octaves.Low)},
+            {$"{Domain.Note.C}{Domain.Octave.Low}", new LuteNote(Keys.Note1, Octaves.Middle)},
+            {$"{Domain.Note.D}{Domain.Octave.Low}", new LuteNote(Keys.Note2, Octaves.Middle)},
+            {$"{Domain.Note.E}{Domain.Octave.Low}", new LuteNote(Keys.Note3, Octaves.Middle)},
+            {$"{Domain.Note.F}{Domain.Octave.Low}", new LuteNote(Keys.Note4, Octaves.Middle)},
+            {$"{Domain.Note.G}{Domain.Octave.Low}", new LuteNote(Keys.Note5, Octaves.Middle)},
+            {$"{Domain.Note.A}{Domain.Octave.Low}", new LuteNote(Keys.Note6, Octaves.Middle)},
+            {$"{Domain.Note.B}{Domain.Octave.Low}", new LuteNote(Keys.Note7, Octaves.Middle)},
+            {$"{Domain.Note.C}{Domain.Octave.Middle}", new LuteNote(Keys.Note1, Octaves.High)},
+            {$"{Domain.Note.D}{Domain.Octave.Middle}", new LuteNote(Keys.Note2, Octaves.High)},
+            {$"{Domain.Note.E}{Domain.Octave.Middle}", new LuteNote(Keys.Note3, Octaves.High)},
+            {$"{Domain.Note.F}{Domain.Octave.Middle}", new LuteNote(Keys.Note4, Octaves.High)},
+            {$"{Domain.Note.G}{Domain.Octave.Middle}", new LuteNote(Keys.Note5, Octaves.High)},
+            {$"{Domain.Note.A}{Domain.Octave.Middle}", new LuteNote(Keys.Note6, Octaves.High)},
+            {$"{Domain.Note.B}{Domain.Octave.Middle}", new LuteNote(Keys.Note7, Octaves.High)},
+            {$"{Domain.Note.C}{Domain.Octave.High}", new LuteNote(Keys.Note8, Octaves.High)}
         };
 
         public Keys Key { get; }
@@ -69,9 +61,9 @@ namespace Nekres.Musician.Core.Instrument.Lute
             Octave = octave;
         }
 
-        public static LuteNote From(Note note)
+        public static LuteNote From(BaseNote note)
         {
-            return Map[$"{note.Key}{note.Octave}"];
+            return Map[$"{note.Note}{note.Octave}"];
         }
 
         public override bool Equals(object obj)

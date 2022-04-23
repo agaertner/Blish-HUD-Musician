@@ -1,6 +1,6 @@
 ﻿using System;
 using Blish_HUD.Controls.Intern;
-using static Nekres.Musician.MusicianModule;
+
 namespace Nekres.Musician.Core.Instrument.Harp
 {
     public class HarpPreview : IInstrumentPreview
@@ -21,7 +21,7 @@ namespace Nekres.Musician.Core.Instrument.Harp
                 case GuildWarsControls.HealingSkill:
                 case GuildWarsControls.UtilitySkill1:
                 case GuildWarsControls.UtilitySkill2:
-                    ModuleInstance.MusicPlayer.PlaySound(_soundRepository.Get(key, _octave));
+                    MusicianModule.ModuleInstance.MusicPlayer.PlaySound(_soundRepository.Get(key, _octave));
                     break;
                 case GuildWarsControls.UtilitySkill3:
                     DecreaseOctave();

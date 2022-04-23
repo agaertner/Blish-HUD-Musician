@@ -205,7 +205,6 @@
     <Compile Include="Core\Instrument\Bell\BellNote.cs" />
     <Compile Include="Core\Instrument\Bell\BellPreview.cs" />
     <Compile Include="Core\Instrument\Bell\BellSoundRepository.cs" />
-    <Compile Include="Core\Instrument\IInstrumentPreview.cs" />
     <Compile Include="Core\Instrument\Flute\Flute.cs" />
     <Compile Include="Core\Instrument\Flute\FluteNote.cs" />
     <Compile Include="Core\Instrument\Flute\FlutePreview.cs" />
@@ -218,7 +217,9 @@
     <Compile Include="Core\Instrument\Horn\HornNote.cs" />
     <Compile Include="Core\Instrument\Horn\HornPreview.cs" />
     <Compile Include="Core\Instrument\Horn\HornSoundRepository.cs" />
-    <Compile Include="Core\Instrument\Instrument.cs" />
+    <Compile Include="Core\Instrument\BaseInstrument.cs" />
+    <Compile Include="Core\Instrument\BaseNote.cs" />
+    <Compile Include="Core\Instrument\ISoundRepository.cs" />
     <Compile Include="Core\Instrument\Lute\Lute.cs" />
     <Compile Include="Core\Instrument\Lute\LuteNote.cs" />
     <Compile Include="Core\Instrument\Lute\LutePreview.cs" />
@@ -233,7 +234,7 @@
     <Compile Include="Core\Domain\Chord.cs" />
     <Compile Include="Core\Domain\ChordOffset.cs" />
     <Compile Include="Core\Domain\Metronome.cs" />
-    <Compile Include="Core\Domain\Note.cs" />
+    <Compile Include="Core\Domain\RealNote.cs" />
     <Compile Include="MusicianModule.cs" />
     <Compile Include="Core\Models\MusicSheet.cs" />
     <Compile Include="Core\Player\Algorithms\FavorChordsAlgorithm.cs" />

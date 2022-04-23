@@ -6,7 +6,7 @@ using Nekres.Musician.Core.Domain;
 
 namespace Nekres.Musician.Core.Instrument.Harp
 {
-    public class Harp : Musician.Core.Instrument.Instrument
+    public class Harp : Musician.Core.Instrument.BaseInstrument
     {
         private readonly TimeSpan NoteTimeout = TimeSpan.FromMilliseconds(5);
         private readonly TimeSpan OctaveTimeout = TimeSpan.FromTicks(500);
@@ -30,7 +30,7 @@ namespace Nekres.Musician.Core.Instrument.Harp
         }
 
 
-        public override void PlayNote(Note note)
+        public override void PlayNote(BaseNote note)
         {
             var harpNote = HarpNote.From(note);
 
@@ -42,7 +42,7 @@ namespace Nekres.Musician.Core.Instrument.Harp
         }
 
 
-        public override void GoToOctave(Note note)
+        public override void GoToOctave(BaseNote note)
         {
             var harpNote = HarpNote.From(note);
 

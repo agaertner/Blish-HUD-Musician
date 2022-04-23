@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading;
 using Blish_HUD;
 using Nekres.Musician.Core.Domain;
+using Nekres.Musician.Core.Instrument;
 
 namespace Nekres.Musician.Core.Player.Algorithms
 {
@@ -11,7 +12,7 @@ namespace Nekres.Musician.Core.Player.Algorithms
     {
         private bool Abort = false;
         public void Dispose() { Abort = true; }
-        public void Play(Instrument instrument, Metronome metronomeMark, ChordOffset[] melody)
+        public void Play(BaseInstrument instrument, Metronome metronomeMark, ChordOffset[] melody)
         {
             PrepareChordsOctave(instrument, melody[0].Chord);
 
@@ -46,12 +47,12 @@ namespace Nekres.Musician.Core.Player.Algorithms
             stopwatch.Stop();
         }
 
-        private static void PrepareChordsOctave(Instrument instrument, Chord chord)
+        private void PrepareChordsOctave(BaseInstrument instrument, Chord chord)
         {
             instrument.GoToOctave(chord.Notes.First());
         }
 
-        private static void PlayChord(Instrument instrument, Chord chord)
+        private void PlayChord(BaseInstrument instrument, Chord chord)
         {
             var notes = chord.Notes.ToArray();
 
@@ -66,7 +67,7 @@ namespace Nekres.Musician.Core.Player.Algorithms
             }
         }
 
-        private static void PrepareNoteOctave(Instrument instrument, Note note)
+        private void PrepareNoteOctave(BaseInstrument instrument, BaseNote note)
         {
             instrument.GoToOctave(note);
         }

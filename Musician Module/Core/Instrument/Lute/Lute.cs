@@ -6,7 +6,7 @@ using Nekres.Musician.Core.Domain;
 
 namespace Nekres.Musician.Core.Instrument.Lute
 {
-    public class Lute : Musician.Core.Instrument.Instrument
+    public class Lute : Musician.Core.Instrument.BaseInstrument
     {
 
         private readonly TimeSpan NoteTimeout = TimeSpan.FromMilliseconds(5);
@@ -31,7 +31,7 @@ namespace Nekres.Musician.Core.Instrument.Lute
         }
 
 
-        public override void PlayNote(Note note)
+        public override void PlayNote(BaseNote note)
         {
             var luteNote = LuteNote.From(note);
 
@@ -50,7 +50,7 @@ namespace Nekres.Musician.Core.Instrument.Lute
         }
 
 
-        public override void GoToOctave(Note note)
+        public override void GoToOctave(BaseNote note)
         {
             var luteNote = LuteNote.From(note);
 

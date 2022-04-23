@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading;
+using Blish_HUD.Controls.Extern;
 using Blish_HUD.Controls.Intern;
-using Nekres.Musician.Core.Domain;
-using Nekres.Musician_Module;
 
 namespace Nekres.Musician.Core.Instrument.Flute
 {
-    public class Flute : Musician.Core.Instrument.Instrument
+    public class Flute : Musician.Core.Instrument.BaseInstrument
     {
         private readonly TimeSpan NoteTimeout = TimeSpan.FromMilliseconds(5);
         private readonly TimeSpan OctaveTimeout = TimeSpan.FromTicks(500);
@@ -161,8 +160,7 @@ namespace Nekres.Musician.Core.Instrument.Flute
 
             } else if (Mode == InstrumentMode.Emulate) {
 
-                Keyboard.Press(VirtualKeyShorts[key]);
-                Keyboard.Release(VirtualKeyShorts[key]);
+                Keyboard.Stroke((VirtualKeyShort)GetKeyBinding(key));
 
             } else if (Mode == InstrumentMode.Preview) {
 
@@ -170,7 +168,6 @@ namespace Nekres.Musician.Core.Instrument.Flute
 
             }
         }
-
 
         public override void Dispose() {
             Preview?.Dispose();

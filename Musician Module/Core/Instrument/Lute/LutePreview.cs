@@ -1,15 +1,19 @@
 ﻿using System;
 using Blish_HUD.Controls.Intern;
-using static Nekres.Musician.MusicianModule;
+
 namespace Nekres.Musician.Core.Instrument.Lute
 {
-    public class LutePreview : IInstrumentPreview
+    public class LutePreview : BaseInstrument
     {
         private LuteNote.Octaves _octave = LuteNote.Octaves.Middle;
 
 
-        private readonly LuteSoundRepository _soundRepository = new LuteSoundRepository();
+        private readonly ISoundRepository _soundRepository;
 
+        public LutePreview(ISoundRepository soundRepository)
+        {
+            _soundRepository = soundRepository;
+        }
 
         public void PlaySoundByKey(GuildWarsControls key)
         {
@@ -23,7 +27,7 @@ namespace Nekres.Musician.Core.Instrument.Lute
                 case GuildWarsControls.HealingSkill:
                 case GuildWarsControls.UtilitySkill1:
                 case GuildWarsControls.UtilitySkill2:
-                    ModuleInstance.MusicPlayer.PlaySound(_soundRepository.Get(key, _octave));
+                    MusicianModule.ModuleInstance.MusicPlayer.PlaySound(_soundRepository.Get(key, _octave));
                     break;
                 case GuildWarsControls.UtilitySkill3:
                     DecreaseOctave();

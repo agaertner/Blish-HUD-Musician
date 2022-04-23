@@ -3,7 +3,7 @@ using System.Linq;
 
 namespace Nekres.Musician.Core.Domain
 {
-    public enum Key
+    public enum Note
     {
         Z,
         C,
@@ -14,51 +14,53 @@ namespace Nekres.Musician.Core.Domain
         A,
         B
     }
+
     public enum Octave
     {
+
         Lowest, // C,,,
         Lower,  // C,,
         Low,    // C,
-        Minor,  // C
-        Major,  // c
+        Middle,
         High,   // c'
         Higher, // c''
         Highest // c'''
     }
 
-    public class Note
+    public class RealNote
     {
-        public Key Key { get; }
+        public Note Note { get; }
+
         public Octave Octave { get; }
 
-        private Note(Key key, Octave octave)
+        public RealNote(Note note, Octave octave)
         {
-            Key = key;
+            Note = note;
             Octave = octave;
         }
 
         public override string ToString()
         {
-            return $"{(Octave >= Octave.Minor ? "▲" : Octave <= Octave.Major ? "▼" : string.Empty)}{Key}";
+            return $"{(Octave > Octave.Middle ? "▲" : Octave < Octave.Middle ? "▼" : string.Empty)}{Note}";
         }
 
-        public override bool Equals(object obj) => Equals((Note)obj);
-        protected bool Equals(Note other) => Key == other.Key && Octave == other.Octave;
+        public override bool Equals(object obj) => Equals((RealNote)obj);
+        protected bool Equals(RealNote other) => Note == other.Note && Octave == other.Octave;
 
         public override int GetHashCode()
         {
             unchecked
             {
-                return ((int)Key*397) ^ (int)Octave;
+                return ((int)Note*397) ^ (int)Octave;
             }
         }
 
         public string Serialize()
         {
-            if (Key == Key.Z)
+            if (Note == Note.Z)
                 return "z";
 
-            var result = Key.ToString();
+            var result = Note.ToString();
 
             switch (Octave)
             {
@@ -71,7 +73,7 @@ namespace Nekres.Musician.Core.Domain
                 case Octave.Low:
                     result += ",";
                     break;
-                case Octave.Major:
+                case Octave.Middle:
                     result = result.ToLowerInvariant();
                     break;
                 case Octave.High:
@@ -88,23 +90,23 @@ namespace Nekres.Musician.Core.Domain
             return result;
         }
 
-        public static Note Deserialize(string str)
+        public static RealNote Deserialize(string str)
         {
-            if (string.IsNullOrEmpty(str) || !Enum.TryParse<Key>(str[0].ToString(), true, out var key) 
+            if (string.IsNullOrEmpty(str) || !Enum.TryParse<Note>(str[0].ToString(), true, out var key) 
                                           || !TryParseOctave(str, out var octave))
                 throw new FormatException("Provided string is not valid.");
-            return new Note(key, octave);
+            return new RealNote(key, octave);
         }
 
         private static bool TryParseOctave(string text, out Octave octave)
         {
             octave = 0;
-            if (string.IsNullOrEmpty(text) || !Array.Exists(Enum.GetValues(typeof(Key)).Cast<Key>().ToArray(), k => char.Parse(k.ToString()).Equals(char.ToUpperInvariant(text[0])))) 
+            if (string.IsNullOrEmpty(text) || !Array.Exists(Enum.GetValues(typeof(Note)).Cast<Note>().ToArray(), k => char.Parse(k.ToString()).Equals(char.ToUpperInvariant(text[0])))) 
                 return false;
 
             if (text.Length == 1)
             {
-                octave = char.IsUpper(text[0]) ? Octave.Minor : Octave.Major;
+                octave = Octave.Middle;
                 return true;
             }
 

@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.Threading;
 using Blish_HUD.Controls.Intern;
 using Nekres.Musician.Core.Domain;
+using Nekres.Musician.Core.Instrument.Horn;
 
-namespace Nekres.Musician.Core.Instrument.Horn
+namespace Nekres.Musician_Module.Controls.Instrument
 {
-    public class Horn : Musician.Core.Instrument.Instrument
+    public class Horn : Musician.Core.Instrument.BaseInstrument
     {
         private readonly TimeSpan NoteTimeout = TimeSpan.FromMilliseconds(5);
         private readonly TimeSpan OctaveTimeout = TimeSpan.FromTicks(500);
@@ -30,7 +31,7 @@ namespace Nekres.Musician.Core.Instrument.Horn
         }
 
 
-        public override void PlayNote(Note note)
+        public override void PlayNote(RealNote note)
         {
             var hornNote = HornNote.From(note);
 
@@ -49,7 +50,7 @@ namespace Nekres.Musician.Core.Instrument.Horn
         }
 
 
-        public override void GoToOctave(Note note)
+        public override void GoToOctave(RealNote note)
         {
             var hornNote = HornNote.From(note);
 

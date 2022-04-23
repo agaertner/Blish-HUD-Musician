@@ -1,6 +1,6 @@
 ﻿using System;
 using Blish_HUD.Controls.Intern;
-using static Nekres.Musician.MusicianModule;
+
 namespace Nekres.Musician.Core.Instrument.Flute
 {
     public class FlutePreview : IInstrumentPreview
@@ -21,8 +21,7 @@ namespace Nekres.Musician.Core.Instrument.Flute
                 case GuildWarsControls.HealingSkill:
                 case GuildWarsControls.UtilitySkill1:
                 case GuildWarsControls.UtilitySkill2:
-                    ModuleInstance.MusicPlayer.StopSound();
-                    ModuleInstance.MusicPlayer.PlaySound(_soundRepository.Get(key, _octave));
+                    MusicianModule.ModuleInstance.MusicPlayer.PlaySound(_soundRepository.Get(key, _octave), true);
                     break;
                 case GuildWarsControls.UtilitySkill3:
                     if (_octave == FluteNote.Octaves.Low)
@@ -35,7 +34,7 @@ namespace Nekres.Musician.Core.Instrument.Flute
                     }
                     break;
                 case GuildWarsControls.EliteSkill:
-                    ModuleInstance.MusicPlayer.StopSound();
+                    MusicianModule.ModuleInstance.MusicPlayer.StopSound();
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();

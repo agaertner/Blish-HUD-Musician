@@ -1,7 +1,9 @@
 ﻿using System;
 using Blish_HUD.Controls.Intern;
-using static Nekres.Musician.MusicianModule;
-namespace Nekres.Musician.Core.Instrument.Horn
+using Nekres.Musician;
+using Nekres.Musician.Core.Instrument;
+using Nekres.Musician.Core.Instrument.Horn;
+namespace Nekres.Musician_Module.Controls.Instrument
 {
     public class HornPreview : IInstrumentPreview
     {
@@ -21,8 +23,7 @@ namespace Nekres.Musician.Core.Instrument.Horn
                 case GuildWarsControls.HealingSkill:
                 case GuildWarsControls.UtilitySkill1:
                 case GuildWarsControls.UtilitySkill2:
-                    ModuleInstance.MusicPlayer.StopSound();
-                    ModuleInstance.MusicPlayer.PlaySound(_soundRepository.Get(key, _octave));
+                    MusicianModule.ModuleInstance.MusicPlayer.PlaySound(_soundRepository.Get(key, _octave), true);
                     break;
                 case GuildWarsControls.UtilitySkill3:
                     DecreaseOctave();
