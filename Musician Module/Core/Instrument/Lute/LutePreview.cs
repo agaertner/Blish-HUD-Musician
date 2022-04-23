@@ -1,21 +1,55 @@
-﻿using System;
-using Blish_HUD.Controls.Intern;
+﻿using Blish_HUD.Controls.Intern;
+using Nekres.Musician.Core.Domain;
 
-namespace Nekres.Musician.Core.Instrument.Lute
+namespace Nekres.Musician.Core.Instrument
 {
-    public class LutePreview : BaseInstrument
+    public class LutePreview : InstrumentBase
     {
-        private LuteNote.Octaves _octave = LuteNote.Octaves.Middle;
+        private readonly LuteSoundRepository _soundRepository;
 
-
-        private readonly ISoundRepository _soundRepository;
-
-        public LutePreview(ISoundRepository soundRepository)
+        public LutePreview(LuteSoundRepository soundRepo)
         {
-            _soundRepository = soundRepository;
+            this.CurrentOctave = Octave.Middle;
+            _soundRepository = soundRepo;
         }
 
-        public void PlaySoundByKey(GuildWarsControls key)
+        protected override NoteBase ConvertNote(RealNote note) => LuteNote.From(note);
+
+        protected override NoteBase OptimizeNote(NoteBase note) => note;
+
+        protected override void IncreaseOctave()
+        {
+            switch (this.CurrentOctave)
+            {
+                case Octave.Low:
+                    this.CurrentOctave = Octave.Middle;
+                    break;
+                case Octave.Middle:
+                    this.CurrentOctave = Octave.High;
+                    break;
+                case Octave.High:
+                    break;
+                default: break;
+            }
+        }
+
+        protected override void DecreaseOctave()
+        {
+            switch (this.CurrentOctave)
+            {
+                case Octave.Low:
+                    break;
+                case Octave.Middle:
+                    this.CurrentOctave = Octave.Low;
+                    break;
+                case Octave.High:
+                    this.CurrentOctave = Octave.Middle;
+                    break;
+                default: break;
+            }
+        }
+
+        protected override void PressKey(GuildWarsControls key)
         {
             switch (key)
             {
@@ -27,7 +61,7 @@ namespace Nekres.Musician.Core.Instrument.Lute
                 case GuildWarsControls.HealingSkill:
                 case GuildWarsControls.UtilitySkill1:
                 case GuildWarsControls.UtilitySkill2:
-                    MusicianModule.ModuleInstance.MusicPlayer.PlaySound(_soundRepository.Get(key, _octave));
+                    MusicianModule.ModuleInstance.MusicPlayer.PlaySound(_soundRepository.Get(key, this.CurrentOctave));
                     break;
                 case GuildWarsControls.UtilitySkill3:
                     DecreaseOctave();
@@ -35,54 +69,11 @@ namespace Nekres.Musician.Core.Instrument.Lute
                 case GuildWarsControls.EliteSkill:
                     IncreaseOctave();
                     break;
-                default:
-                    throw new ArgumentOutOfRangeException();
+                default: break;
             }
         }
 
-
-        private void IncreaseOctave()
-        {
-            switch (_octave)
-            {
-                case LuteNote.Octaves.None:
-                    break;
-                case LuteNote.Octaves.Low:
-                    _octave = LuteNote.Octaves.Middle;
-                    break;
-                case LuteNote.Octaves.Middle:
-                    _octave = LuteNote.Octaves.High;
-                    break;
-                case LuteNote.Octaves.High:
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
-        }
-
-
-        private void DecreaseOctave()
-        {
-            switch (_octave)
-            {
-                case LuteNote.Octaves.None:
-                    break;
-                case LuteNote.Octaves.Low:
-                    break;
-                case LuteNote.Octaves.Middle:
-                    _octave = LuteNote.Octaves.Low;
-                    break;
-                case LuteNote.Octaves.High:
-                    _octave = LuteNote.Octaves.Middle;
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
-        }
-
-
-        public void Dispose() {
-            _soundRepository.Dispose();
+        public override void Dispose() {
         }
     }
 }

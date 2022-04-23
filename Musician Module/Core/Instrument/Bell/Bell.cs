@@ -1,37 +1,29 @@
-﻿using Blish_HUD.Controls.Intern;
-using Nekres.Musician.Core.Domain;
+﻿using Nekres.Musician.Core.Domain;
 using System;
 using System.Threading;
+using static Blish_HUD.Controls.Intern.GuildWarsControls;
 
-namespace Nekres.Musician.Core.Instrument.Bell
+namespace Nekres.Musician.Core.Instrument
 {
-    public class Bell : BaseInstrument
+    public class Bell : InstrumentBase
     {
         public Bell()
         {
             this.CurrentOctave = Octave.Middle;
         }
 
-        protected override BaseNote ConvertNote(RealNote note) => BellNote.From(note);
+        protected override NoteBase ConvertNote(RealNote note) => BellNote.From(note);
 
-        protected override BaseNote OptimizeNote(BaseNote note)
+        protected override NoteBase OptimizeNote(NoteBase note)
         {
-            if (note.Equals(new BellNote(GuildWarsControls.WeaponSkill1, Octave.High)) && CurrentOctave == Octave.Middle)
-            {
-                note = new BellNote(GuildWarsControls.UtilitySkill2, Octave.Middle);
-            }
-            else if (note.Equals(new BellNote(GuildWarsControls.UtilitySkill2, Octave.Middle)) && CurrentOctave == Octave.High)
-            {
-                note = new BellNote(GuildWarsControls.WeaponSkill1, Octave.High);
-            }
-            else if (note.Equals(new BellNote(GuildWarsControls.WeaponSkill1, Octave.Middle)) && CurrentOctave == Octave.Low)
-            {
-                note = new BellNote(GuildWarsControls.UtilitySkill2, Octave.Low);
-            }
-            else if (note.Equals(new BellNote(GuildWarsControls.UtilitySkill2, Octave.Low)) && CurrentOctave == Octave.Middle)
-            {
-                note = new BellNote(GuildWarsControls.WeaponSkill1, Octave.Middle);
-            }
+            if (note.Equals(new BellNote(WeaponSkill1, Octave.High)) && CurrentOctave == Octave.Middle)
+                note = new BellNote(UtilitySkill2, Octave.Middle);
+            else if (note.Equals(new BellNote(UtilitySkill2, Octave.Middle)) && CurrentOctave == Octave.High)
+                note = new BellNote(WeaponSkill1, Octave.High);
+            else if (note.Equals(new BellNote(WeaponSkill1, Octave.Middle)) && CurrentOctave == Octave.Low)
+                note = new BellNote(UtilitySkill2, Octave.Low);
+            else if (note.Equals(new BellNote(UtilitySkill2, Octave.Low)) && CurrentOctave == Octave.Middle)
+                note = new BellNote(WeaponSkill1, Octave.Middle);
             return note;
         }
 
@@ -51,7 +43,7 @@ namespace Nekres.Musician.Core.Instrument.Bell
                     throw new ArgumentOutOfRangeException();
             }
 
-            PressKey(GuildWarsControls.EliteSkill);
+            PressKey(EliteSkill);
 
             Thread.Sleep(OctaveTimeout);
         }
@@ -72,7 +64,7 @@ namespace Nekres.Musician.Core.Instrument.Bell
                     throw new ArgumentOutOfRangeException();
             }
 
-            PressKey(GuildWarsControls.UtilitySkill3);
+            PressKey(UtilitySkill3);
 
             Thread.Sleep(OctaveTimeout);
         }

@@ -2,8 +2,8 @@
 using Blish_HUD.Controls.Intern;
 using Nekres.Musician.Core.Domain;
 
-namespace Nekres.Musician.Core.Instrument.Bass {
-    public class BassNote : BaseNote
+namespace Nekres.Musician.Core.Instrument {
+    public class BassNote : NoteBase
     {
         private static readonly Dictionary<string, BassNote> Map = new()
         {
@@ -32,24 +32,6 @@ namespace Nekres.Musician.Core.Instrument.Bass {
         public static BassNote From(RealNote note)
         {
             return Map[$"{note.Note}{note.Octave}"];
-        }
-
-        public override bool Equals(object obj)
-        {
-            return Equals((BassNote) obj);
-        }
-
-        protected bool Equals(BassNote other)
-        {
-            return this.Key == other.Key && Octave == other.Octave;
-        }
-
-        public override int GetHashCode()
-        {
-            unchecked
-            {
-                return ((int) Key * 397) ^ (int) Octave;
-            }
         }
     }
 }

@@ -1,34 +1,33 @@
 using Blish_HUD.Controls.Intern;
 using Microsoft.Xna.Framework.Audio;
-using Nekres.Musician.Core.Instrument.Flute;
+using Nekres.Musician.Core.Domain;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Nekres.Musician.Core.Domain;
 
-namespace Nekres.Musician.Core.Instrument.Bass
+namespace Nekres.Musician.Core.Instrument
 {
     public class BassSoundRepository : ISoundRepository
     {
         private readonly Dictionary<string, string> _map = new()
         {
             // Low Octave
-            {$"{GuildWarsControls.WeaponSkill1}{FluteNote.Octaves.Low}", "C1"},
-            {$"{GuildWarsControls.WeaponSkill2}{FluteNote.Octaves.Low}", "D1"},
-            {$"{GuildWarsControls.WeaponSkill3}{FluteNote.Octaves.Low}", "E1"},
-            {$"{GuildWarsControls.WeaponSkill4}{FluteNote.Octaves.Low}", "F1"},
-            {$"{GuildWarsControls.WeaponSkill5}{FluteNote.Octaves.Low}", "G1"},
-            {$"{GuildWarsControls.HealingSkill}{FluteNote.Octaves.Low}", "A1"},
-            {$"{GuildWarsControls.UtilitySkill1}{FluteNote.Octaves.Low}", "B1"},
-            {$"{GuildWarsControls.UtilitySkill2}{FluteNote.Octaves.Low}", "C2"},
+            {$"{GuildWarsControls.WeaponSkill1}{Octave.Low}", "C1"},
+            {$"{GuildWarsControls.WeaponSkill2}{Octave.Low}", "D1"},
+            {$"{GuildWarsControls.WeaponSkill3}{Octave.Low}", "E1"},
+            {$"{GuildWarsControls.WeaponSkill4}{Octave.Low}", "F1"},
+            {$"{GuildWarsControls.WeaponSkill5}{Octave.Low}", "G1"},
+            {$"{GuildWarsControls.HealingSkill}{Octave.Low}", "A1"},
+            {$"{GuildWarsControls.UtilitySkill1}{Octave.Low}", "B1"},
+            {$"{GuildWarsControls.UtilitySkill2}{Octave.Low}", "C2"},
             // High Octave
-            {$"{GuildWarsControls.WeaponSkill1}{FluteNote.Octaves.High}", "C2"},
-            {$"{GuildWarsControls.WeaponSkill2}{FluteNote.Octaves.High}", "D2"},
-            {$"{GuildWarsControls.WeaponSkill3}{FluteNote.Octaves.High}", "E2"},
-            {$"{GuildWarsControls.WeaponSkill4}{FluteNote.Octaves.High}", "F2"},
-            {$"{GuildWarsControls.WeaponSkill5}{FluteNote.Octaves.High}", "G2"},
-            {$"{GuildWarsControls.HealingSkill}{FluteNote.Octaves.High}", "A2"},
-            {$"{GuildWarsControls.UtilitySkill1}{FluteNote.Octaves.High}", "B2"},
-            {$"{GuildWarsControls.UtilitySkill2}{FluteNote.Octaves.High}", "C3"}
+            {$"{GuildWarsControls.WeaponSkill1}{Octave.High}", "C2"},
+            {$"{GuildWarsControls.WeaponSkill2}{Octave.High}", "D2"},
+            {$"{GuildWarsControls.WeaponSkill3}{Octave.High}", "E2"},
+            {$"{GuildWarsControls.WeaponSkill4}{Octave.High}", "F2"},
+            {$"{GuildWarsControls.WeaponSkill5}{Octave.High}", "G2"},
+            {$"{GuildWarsControls.HealingSkill}{Octave.High}", "A2"},
+            {$"{GuildWarsControls.UtilitySkill1}{Octave.High}", "B2"},
+            {$"{GuildWarsControls.UtilitySkill2}{Octave.High}", "C3"}
         };
 
         private Dictionary<string, SoundEffectInstance> _sound;

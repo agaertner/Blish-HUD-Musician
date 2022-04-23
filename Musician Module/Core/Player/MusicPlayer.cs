@@ -1,26 +1,44 @@
-﻿using Microsoft.Xna.Framework.Audio;
-using Nekres.Musician_Module.Domain;
+﻿using Nekres.Musician.Core.Instrument;
+using Nekres.Musician.Core.Models;
+using Nekres.Musician.Core.Player.Algorithms;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Nekres.Musician;
-using Nekres.Musician.Core.Instrument;
-using Nekres.Musician.Core.Instrument.Bass;
-using Nekres.Musician.Core.Instrument.Bell;
-using Nekres.Musician.Core.Instrument.Bell2;
-using Nekres.Musician.Core.Instrument.Flute;
-using Nekres.Musician.Core.Instrument.Harp;
-using Nekres.Musician.Core.Instrument.Lute;
-using Nekres.Musician.Core.Player.Algorithms;
-using Nekres.Musician_Module.Controls.Instrument;
+using Microsoft.Xna.Framework.Audio;
 
-namespace Nekres.Musician_Module.Player
+namespace Nekres.Musician.Core.Player
 {
-    public class MusicPlayer : IDisposable
+    internal class MusicPlayer : IDisposable
     {
-        public Thread Worker { get; private set; }
-        public IPlayAlgorithm Algorithm { get; private set; }
+        private readonly Dictionary<Models.Instrument, ISoundRepository> _soundRepositories;
+
+        public MusicPlayer()
+        {
+            _soundRepositories = new Dictionary<Models.Instrument, ISoundRepository>
+            {
+                {Models.Instrument.Bass, new BassSoundRepository()},
+                {Models.Instrument.Bell, new BellSoundRepository()},
+                {Models.Instrument.Bell2, new Bell2SoundRepository()},
+                {Models.Instrument.Flute, new FluteSoundRepository()},
+                {Models.Instrument.Harp, new HarpSoundRepository()},
+                {Models.Instrument.Horn, new HornSoundRepository()},
+                {Models.Instrument.Lute, new LuteSoundRepository()}
+            };
+        }
+
+        public async Task LoadAsync()
+        {
+            foreach (var (_, soundRepo) in _soundRepositories) await soundRepo.Initialize();
+        }
+
+        public void Dispose()
+        {
+            foreach (var (_, soundRepo) in _soundRepositories) soundRepo.Dispose();
+        }
+
+        private PlayAlgorithmBase _algorithm;
 
         private SoundEffectInstance _activeSfx;
 
@@ -42,44 +60,11 @@ namespace Nekres.Musician_Module.Player
             _activeSfx?.Stop();
         }
 
-        public MusicPlayer(MusicSheet musicSheet, BaseInstrument instrument, IPlayAlgorithm algorithm)
+        public void Play(MusicSheet musicSheet, InstrumentBase instrument)
         {
-            Algorithm = algorithm;
-            Worker = new Thread(() => algorithm.Play(instrument, musicSheet.MetronomeMark, musicSheet.Melody.ToArray()));
-        }
-
-        public void PlayMusicSheet(Musician.Core.Models.MusicSheet musicSheet, InstrumentMode mode)
-        {
-            var algorithm = musicSheet.Algorithm == Musician.Core.Models.Algorithm.FavorNotes ? new FavorNotesAlgorithm() : (IPlayAlgorithm)new FavorChordsAlgorithm();
-
-            switch (musicSheet.Instrument)
-            {
-                case Models.Instrument.Bass:
-                    return new MusicPlayer(musicSheet, new Bass(), algorithm);
-                case Models.Instrument.Bell:
-                    return new MusicPlayer(musicSheet, new Bell(), algorithm);
-                case Models.Instrument.Bell2:
-                    return new MusicPlayer(musicSheet, new Bell2(), algorithm);
-                case Models.Instrument.Flute:
-                    return new MusicPlayer(musicSheet, new Flute(), algorithm);
-                case Models.Instrument.Harp:
-                    return new MusicPlayer(musicSheet, new Harp(), algorithm);
-                case Models.Instrument.Horn:
-                    return new MusicPlayer(musicSheet, new Horn(), algorithm);
-                case Models.Instrument.Lute:
-                    return new MusicPlayer(musicSheet, new Lute(), algorithm);
-            }
-        }
-
-        public async Task Initialize()
-        {
-
-        }
-
-        public void Dispose()
-        {
-            StopSound();
-            Algorithm.Dispose();
+            _algorithm?.Dispose();
+            _algorithm = musicSheet.Algorithm == Models.Algorithm.FavorChords ? new FavorChordsAlgorithm() : new FavorNotesAlgorithm();
+            var worker = new Thread(() => _algorithm.Play(instrument, musicSheet.Tempo, musicSheet.Melody.ToArray()));
         }
     }
 }

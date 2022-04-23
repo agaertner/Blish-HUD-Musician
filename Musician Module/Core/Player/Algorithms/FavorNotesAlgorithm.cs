@@ -8,24 +8,21 @@ using Nekres.Musician.Core.Instrument;
 
 namespace Nekres.Musician.Core.Player.Algorithms
 {
-    public class FavorNotesAlgorithm : IPlayAlgorithm
+    public class FavorNotesAlgorithm : PlayAlgorithmBase
     {
-        private bool Abort = false;
-        public void Dispose() { Abort = true; }
-        public void Play(BaseInstrument instrument, Metronome metronomeMark, ChordOffset[] melody)
+        public override void Play(InstrumentBase instrument, Metronome metronomeMark, ChordOffset[] melody)
         {
             PrepareChordsOctave(instrument, melody[0].Chord);
 
-            var stopwatch = new Stopwatch();
-            stopwatch.Start();
+            _stopwatch.Start();
 
             for (var strumIndex = 0; strumIndex < melody.Length;)
             {
-                if (Abort) return;
+                if (_abort) return;
 
                 var strum = melody[strumIndex];
 
-                if (stopwatch.ElapsedMilliseconds > metronomeMark.WholeNoteLength.Multiply(strum.Offset).TotalMilliseconds)
+                if (_stopwatch.ElapsedMilliseconds > metronomeMark.WholeNoteLength.Multiply(strum.Offset).TotalMilliseconds)
                 {
                     var chord = strum.Chord;
 
@@ -44,15 +41,15 @@ namespace Nekres.Musician.Core.Player.Algorithms
                 }
             }
 
-            stopwatch.Stop();
+            this.Dispose();
         }
 
-        private void PrepareChordsOctave(BaseInstrument instrument, Chord chord)
+        private void PrepareChordsOctave(InstrumentBase instrument, Chord chord)
         {
             instrument.GoToOctave(chord.Notes.First());
         }
 
-        private void PlayChord(BaseInstrument instrument, Chord chord)
+        private void PlayChord(InstrumentBase instrument, Chord chord)
         {
             var notes = chord.Notes.ToArray();
 
@@ -67,7 +64,7 @@ namespace Nekres.Musician.Core.Player.Algorithms
             }
         }
 
-        private void PrepareNoteOctave(BaseInstrument instrument, BaseNote note)
+        private void PrepareNoteOctave(InstrumentBase instrument, RealNote note)
         {
             instrument.GoToOctave(note);
         }

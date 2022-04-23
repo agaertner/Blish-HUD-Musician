@@ -1,36 +1,36 @@
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using Blish_HUD.Controls.Intern;
 using Microsoft.Xna.Framework.Audio;
+using Nekres.Musician.Core.Domain;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
-namespace Nekres.Musician.Core.Instrument.Flute
+namespace Nekres.Musician.Core.Instrument
 {
     public class FluteSoundRepository : ISoundRepository
     {
         private readonly Dictionary<string, string> _map = new()
         {
             // Low Octave
-            {$"{GuildWarsControls.WeaponSkill1}{FluteNote.Octaves.Low}", "E4"},
-            {$"{GuildWarsControls.WeaponSkill2}{FluteNote.Octaves.Low}", "F4"},
-            {$"{GuildWarsControls.WeaponSkill3}{FluteNote.Octaves.Low}", "G4"},
-            {$"{GuildWarsControls.WeaponSkill4}{FluteNote.Octaves.Low}", "A4"},
-            {$"{GuildWarsControls.WeaponSkill5}{FluteNote.Octaves.Low}", "B4"},
-            {$"{GuildWarsControls.HealingSkill}{FluteNote.Octaves.Low}", "C5"},
-            {$"{GuildWarsControls.UtilitySkill1}{FluteNote.Octaves.Low}", "D5"},
-            {$"{GuildWarsControls.UtilitySkill2}{FluteNote.Octaves.Low}", "E5"},
+            {$"{GuildWarsControls.WeaponSkill1}{Octave.Low}", "E4"},
+            {$"{GuildWarsControls.WeaponSkill2}{Octave.Low}", "F4"},
+            {$"{GuildWarsControls.WeaponSkill3}{Octave.Low}", "G4"},
+            {$"{GuildWarsControls.WeaponSkill4}{Octave.Low}", "A4"},
+            {$"{GuildWarsControls.WeaponSkill5}{Octave.Low}", "B4"},
+            {$"{GuildWarsControls.HealingSkill}{Octave.Low}", "C5"},
+            {$"{GuildWarsControls.UtilitySkill1}{Octave.Low}", "D5"},
+            {$"{GuildWarsControls.UtilitySkill2}{Octave.Low}", "E5"},
             //{$"{GuildWarsControls.UtilitySkill3}{FluteNote.Octaves.Low}", "Increase Octave"},
             //{$"{GuildWarsControls.EliteSkill}{FluteNote.Octaves.Low}", "Stop Playing"},
 
             // High Octave
-            {$"{GuildWarsControls.WeaponSkill1}{FluteNote.Octaves.High}", "E5"},
-            {$"{GuildWarsControls.WeaponSkill2}{FluteNote.Octaves.High}", "F5"},
-            {$"{GuildWarsControls.WeaponSkill3}{FluteNote.Octaves.High}", "G5"},
-            {$"{GuildWarsControls.WeaponSkill4}{FluteNote.Octaves.High}", "A5"},
-            {$"{GuildWarsControls.WeaponSkill5}{FluteNote.Octaves.High}", "B5"},
-            {$"{GuildWarsControls.HealingSkill}{FluteNote.Octaves.High}", "C6"},
-            {$"{GuildWarsControls.UtilitySkill1}{FluteNote.Octaves.High}", "D6"},
-            {$"{GuildWarsControls.UtilitySkill2}{FluteNote.Octaves.High}", "E6"}
+            {$"{GuildWarsControls.WeaponSkill1}{Octave.High}", "E5"},
+            {$"{GuildWarsControls.WeaponSkill2}{Octave.High}", "F5"},
+            {$"{GuildWarsControls.WeaponSkill3}{Octave.High}", "G5"},
+            {$"{GuildWarsControls.WeaponSkill4}{Octave.High}", "A5"},
+            {$"{GuildWarsControls.WeaponSkill5}{Octave.High}", "B5"},
+            {$"{GuildWarsControls.HealingSkill}{Octave.High}", "C6"},
+            {$"{GuildWarsControls.UtilitySkill1}{Octave.High}", "D6"},
+            {$"{GuildWarsControls.UtilitySkill2}{Octave.High}", "E6"}
             //{$"{GuildWarsControls.UtilitySkill3}{FluteNote.Octaves.Low}", "Decrease Octave"},
             //{$"{GuildWarsControls.EliteSkill}{FluteNote.Octaves.Low}", "Stop Playing"},
         };
@@ -42,7 +42,7 @@ namespace Nekres.Musician.Core.Instrument.Flute
             return _sound[id];
         }
 
-        public SoundEffectInstance Get(GuildWarsControls key, FluteNote.Octaves octave)
+        public SoundEffectInstance Get(GuildWarsControls key, Octave octave)
         {
             return _sound[_map[$"{key}{octave}"]];
         }

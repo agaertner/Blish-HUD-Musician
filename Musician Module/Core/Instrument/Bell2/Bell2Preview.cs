@@ -2,9 +2,9 @@
 using Blish_HUD.Controls.Intern;
 using Nekres.Musician.Core.Domain;
 
-namespace Nekres.Musician.Core.Instrument.Bell2
+namespace Nekres.Musician.Core.Instrument
 {
-    public class Bell2Preview : BaseInstrument
+    public class Bell2Preview : InstrumentBase
     {
         private readonly Bell2SoundRepository _soundRepository;
 
@@ -14,9 +14,9 @@ namespace Nekres.Musician.Core.Instrument.Bell2
             _soundRepository = soundRepo;
         }
 
-        protected override BaseNote ConvertNote(RealNote note) => Bell2Note.From(note);
+        protected override NoteBase ConvertNote(RealNote note) => Bell2Note.From(note);
 
-        protected override BaseNote OptimizeNote(BaseNote note) => note;
+        protected override NoteBase OptimizeNote(NoteBase note) => note;
 
         protected override void IncreaseOctave()
         {

@@ -7,17 +7,15 @@ using Nekres.Musician.Core.Instrument;
 
 namespace Nekres.Musician.Core.Player.Algorithms
 {
-    public class FavorChordsAlgorithm : IPlayAlgorithm
+    public class FavorChordsAlgorithm : PlayAlgorithmBase
     {
-        private bool Abort = false;
-        public void Dispose() { Abort = true; }
-        public void Play(BaseInstrument instrument, Metronome metronomeMark, ChordOffset[] melody) {
+        public override void Play(InstrumentBase instrument, Metronome metronomeMark, ChordOffset[] melody) {
             var stopwatch = new Stopwatch();
             stopwatch.Start();
 
             for (var strumIndex = 0; strumIndex < melody.Length;)
             {
-                if (Abort) return;
+                if (_abort) return;
 
                 var strum = melody[strumIndex];
 

@@ -1,31 +1,27 @@
-﻿using Blish_HUD.Controls.Intern;
-using Nekres.Musician.Core.Domain;
+﻿using Nekres.Musician.Core.Domain;
 using System;
 using System.Threading;
+using static Blish_HUD.Controls.Intern.GuildWarsControls;
 
-namespace Nekres.Musician.Core.Instrument.Bell2
+namespace Nekres.Musician.Core.Instrument
 {
-    public class Bell2 : BaseInstrument
+    public class Bell2 : InstrumentBase
     {
         public Bell2()
         {
             this.CurrentOctave = Octave.Low;
         }
 
-        protected override BaseNote OptimizeNote(BaseNote note)
+        protected override NoteBase OptimizeNote(NoteBase note)
         {
-            if (note.Equals(new Bell2Note(GuildWarsControls.WeaponSkill1, Octave.High)) && CurrentOctave == Octave.Low)
-            {
-                note = new Bell2Note(GuildWarsControls.UtilitySkill2, Octave.Low);
-            }
-            else if (note.Equals(new Bell2Note(GuildWarsControls.UtilitySkill2, Octave.Low)) && CurrentOctave == Octave.High)
-            {
-                note = new Bell2Note(GuildWarsControls.WeaponSkill1, Octave.High);
-            }
+            if (note.Equals(new Bell2Note(WeaponSkill1, Octave.High)) && CurrentOctave == Octave.Low)
+                note = new Bell2Note(UtilitySkill2, Octave.Low);
+            else if (note.Equals(new Bell2Note(UtilitySkill2, Octave.Low)) && CurrentOctave == Octave.High)
+                note = new Bell2Note(WeaponSkill1, Octave.High);
             return note;
         }
 
-        protected override BaseNote ConvertNote(RealNote note) => Bell2Note.From(note);
+        protected override NoteBase ConvertNote(RealNote note) => Bell2Note.From(note);
 
         protected override void IncreaseOctave()
         {
@@ -40,7 +36,7 @@ namespace Nekres.Musician.Core.Instrument.Bell2
                     throw new ArgumentOutOfRangeException();
             }
 
-            PressKey(GuildWarsControls.EliteSkill);
+            PressKey(EliteSkill);
 
             Thread.Sleep(OctaveTimeout);
         }
@@ -57,7 +53,7 @@ namespace Nekres.Musician.Core.Instrument.Bell2
                 default: break;
             }
 
-            PressKey(GuildWarsControls.UtilitySkill3);
+            PressKey(UtilitySkill3);
 
             Thread.Sleep(OctaveTimeout);
         }

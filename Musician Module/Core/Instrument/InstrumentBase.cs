@@ -24,7 +24,7 @@ namespace Nekres.Musician.Core.Instrument
         Emulate
     }
 
-    public abstract class BaseInstrument : IDisposable
+    public abstract class InstrumentBase : IDisposable
     {
         protected readonly TimeSpan NoteTimeout = TimeSpan.FromMilliseconds(5);
         protected readonly TimeSpan OctaveTimeout = TimeSpan.FromTicks(500);
@@ -73,11 +73,11 @@ namespace Nekres.Musician.Core.Instrument
             }
         }
 
-        protected abstract BaseNote ConvertNote(RealNote note);
+        protected abstract NoteBase ConvertNote(RealNote note);
 
-        private bool RequiresAction(BaseNote note) => note.Key != GuildWarsControls.None;
+        private bool RequiresAction(NoteBase note) => note.Key != GuildWarsControls.None;
 
-        protected abstract BaseNote OptimizeNote(BaseNote note);
+        protected abstract NoteBase OptimizeNote(NoteBase note);
 
         protected abstract void IncreaseOctave();
 

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Nekres.Musician.Core.Domain;
 
-namespace Nekres.Musician.Core.Instrument.Bell2
+namespace Nekres.Musician.Core.Instrument
 {
     public class Bell2SoundRepository : ISoundRepository
     {

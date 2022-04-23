@@ -1,87 +1,45 @@
 ﻿using Nekres.Musician.Core.Domain;
 using System.Collections.Generic;
+using Blish_HUD.Controls.Intern;
 
-namespace Nekres.Musician.Core.Instrument.Lute
+namespace Nekres.Musician.Core.Instrument
 {
-    public class LuteNote
+    public class LuteNote : NoteBase
     {
-        public enum Keys
+        private static readonly Dictionary<string, LuteNote> Map = new ()
         {
-            None,
-            Note1,
-            Note2,
-            Note3,
-            Note4,
-            Note5,
-            Note6,
-            Note7,
-            Note8
-        }
-
-        public enum Octaves
-        {
-            None,
-            Low,
-            Middle,
-            High
-        }
-
-        private static readonly Dictionary<string, LuteNote> Map = new Dictionary<string, LuteNote>
-        {
-            {$"{Domain.Note.C}{Domain.Octave.Lowest}", new LuteNote(Keys.Note1, Octaves.Low)},
-            {$"{Domain.Note.D}{Domain.Octave.Lowest}", new LuteNote(Keys.Note2, Octaves.Low)},
-            {$"{Domain.Note.E}{Domain.Octave.Lowest}", new LuteNote(Keys.Note3, Octaves.Low)},
-            {$"{Domain.Note.F}{Domain.Octave.Lowest}", new LuteNote(Keys.Note4, Octaves.Low)},
-            {$"{Domain.Note.G}{Domain.Octave.Lowest}", new LuteNote(Keys.Note5, Octaves.Low)},
-            {$"{Domain.Note.A}{Domain.Octave.Lowest}", new LuteNote(Keys.Note6, Octaves.Low)},
-            {$"{Domain.Note.B}{Domain.Octave.Lowest}", new LuteNote(Keys.Note7, Octaves.Low)},
-            {$"{Domain.Note.C}{Domain.Octave.Low}", new LuteNote(Keys.Note1, Octaves.Middle)},
-            {$"{Domain.Note.D}{Domain.Octave.Low}", new LuteNote(Keys.Note2, Octaves.Middle)},
-            {$"{Domain.Note.E}{Domain.Octave.Low}", new LuteNote(Keys.Note3, Octaves.Middle)},
-            {$"{Domain.Note.F}{Domain.Octave.Low}", new LuteNote(Keys.Note4, Octaves.Middle)},
-            {$"{Domain.Note.G}{Domain.Octave.Low}", new LuteNote(Keys.Note5, Octaves.Middle)},
-            {$"{Domain.Note.A}{Domain.Octave.Low}", new LuteNote(Keys.Note6, Octaves.Middle)},
-            {$"{Domain.Note.B}{Domain.Octave.Low}", new LuteNote(Keys.Note7, Octaves.Middle)},
-            {$"{Domain.Note.C}{Domain.Octave.Middle}", new LuteNote(Keys.Note1, Octaves.High)},
-            {$"{Domain.Note.D}{Domain.Octave.Middle}", new LuteNote(Keys.Note2, Octaves.High)},
-            {$"{Domain.Note.E}{Domain.Octave.Middle}", new LuteNote(Keys.Note3, Octaves.High)},
-            {$"{Domain.Note.F}{Domain.Octave.Middle}", new LuteNote(Keys.Note4, Octaves.High)},
-            {$"{Domain.Note.G}{Domain.Octave.Middle}", new LuteNote(Keys.Note5, Octaves.High)},
-            {$"{Domain.Note.A}{Domain.Octave.Middle}", new LuteNote(Keys.Note6, Octaves.High)},
-            {$"{Domain.Note.B}{Domain.Octave.Middle}", new LuteNote(Keys.Note7, Octaves.High)},
-            {$"{Domain.Note.C}{Domain.Octave.High}", new LuteNote(Keys.Note8, Octaves.High)}
+            {$"{Note.C}{Octave.Lowest}", new LuteNote(GuildWarsControls.WeaponSkill1, Octave.Low)},
+            {$"{Note.D}{Octave.Lowest}", new LuteNote(GuildWarsControls.WeaponSkill2, Octave.Low)},
+            {$"{Note.E}{Octave.Lowest}", new LuteNote(GuildWarsControls.WeaponSkill3, Octave.Low)},
+            {$"{Note.F}{Octave.Lowest}", new LuteNote(GuildWarsControls.WeaponSkill4, Octave.Low)},
+            {$"{Note.G}{Octave.Lowest}", new LuteNote(GuildWarsControls.WeaponSkill5, Octave.Low)},
+            {$"{Note.A}{Octave.Lowest}", new LuteNote(GuildWarsControls.HealingSkill, Octave.Low)},
+            {$"{Note.B}{Octave.Lowest}", new LuteNote(GuildWarsControls.UtilitySkill1, Octave.Low)},
+            {$"{Note.C}{Octave.Low}", new LuteNote(GuildWarsControls.WeaponSkill1, Octave.Middle)},
+            {$"{Note.D}{Octave.Low}", new LuteNote(GuildWarsControls.WeaponSkill2, Octave.Middle)},
+            {$"{Note.E}{Octave.Low}", new LuteNote(GuildWarsControls.WeaponSkill3, Octave.Middle)},
+            {$"{Note.F}{Octave.Low}", new LuteNote(GuildWarsControls.WeaponSkill4, Octave.Middle)},
+            {$"{Note.G}{Octave.Low}", new LuteNote(GuildWarsControls.WeaponSkill5, Octave.Middle)},
+            {$"{Note.A}{Octave.Low}", new LuteNote(GuildWarsControls.HealingSkill, Octave.Middle)},
+            {$"{Note.B}{Octave.Low}", new LuteNote(GuildWarsControls.UtilitySkill1, Octave.Middle)},
+            {$"{Note.C}{Octave.Middle}", new LuteNote(GuildWarsControls.WeaponSkill1, Octave.High)},
+            {$"{Note.D}{Octave.Middle}", new LuteNote(GuildWarsControls.WeaponSkill2, Octave.High)},
+            {$"{Note.E}{Octave.Middle}", new LuteNote(GuildWarsControls.WeaponSkill3, Octave.High)},
+            {$"{Note.F}{Octave.Middle}", new LuteNote(GuildWarsControls.WeaponSkill4, Octave.High)},
+            {$"{Note.G}{Octave.Middle}", new LuteNote(GuildWarsControls.WeaponSkill5, Octave.High)},
+            {$"{Note.A}{Octave.Middle}", new LuteNote(GuildWarsControls.HealingSkill, Octave.High)},
+            {$"{Note.B}{Octave.Middle}", new LuteNote(GuildWarsControls.UtilitySkill1, Octave.High)},
+            {$"{Note.C}{Octave.High}", new LuteNote(GuildWarsControls.UtilitySkill2, Octave.High)}
         };
 
-        public Keys Key { get; }
-        public Octaves Octave { get; }
-
-        public LuteNote(Keys key, Octaves octave)
+        public LuteNote(GuildWarsControls key, Octave octave) : base(key, octave)
         {
-            Key = key;
-            Octave = octave;
+            /* NOOP */
         }
 
-        public static LuteNote From(BaseNote note)
+        public static LuteNote From(RealNote note)
         {
             return Map[$"{note.Note}{note.Octave}"];
-        }
-
-        public override bool Equals(object obj)
-        {
-            return Equals((LuteNote) obj);
-        }
-
-        protected bool Equals(LuteNote other)
-        {
-            return Key == other.Key && Octave == other.Octave;
-        }
-
-        public override int GetHashCode()
-        {
-            unchecked
-            {
-                return ((int) Key*397) ^ (int) Octave;
-            }
         }
     }
 }

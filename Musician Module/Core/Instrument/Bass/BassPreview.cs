@@ -1,9 +1,9 @@
 ﻿using Blish_HUD.Controls.Intern;
 using Nekres.Musician.Core.Domain;
 
-namespace Nekres.Musician.Core.Instrument.Bass
+namespace Nekres.Musician.Core.Instrument
 {
-    public class BassPreview : BaseInstrument
+    public class BassPreview : InstrumentBase
     {
         private readonly BassSoundRepository _soundRepository;
 
@@ -13,9 +13,9 @@ namespace Nekres.Musician.Core.Instrument.Bass
             _soundRepository = soundRepo;
         }
 
-        protected override BaseNote ConvertNote(RealNote note) => BassNote.From(note);
+        protected override NoteBase ConvertNote(RealNote note) => BassNote.From(note);
 
-        protected override BaseNote OptimizeNote(BaseNote note) => note;
+        protected override NoteBase OptimizeNote(NoteBase note) => note;
 
         protected override void IncreaseOctave()
         {

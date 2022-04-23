@@ -1,15 +1,50 @@
 ﻿using System;
 using Blish_HUD.Controls.Intern;
+using Nekres.Musician.Core.Domain;
 
-namespace Nekres.Musician.Core.Instrument.Flute
+namespace Nekres.Musician.Core.Instrument
 {
-    public class FlutePreview : IInstrumentPreview
+    public class FlutePreview : InstrumentBase
     {
-        private FluteNote.Octaves _octave = FluteNote.Octaves.Low;
+        private readonly FluteSoundRepository _soundRepository;
 
-        private readonly FluteSoundRepository _soundRepository = new FluteSoundRepository();
+        public FlutePreview(FluteSoundRepository soundRepo)
+        {
+            this.CurrentOctave = Octave.Low;
+            _soundRepository = soundRepo;
+        }
 
-        public void PlaySoundByKey(GuildWarsControls key)
+        protected override NoteBase ConvertNote(RealNote note) => FluteNote.From(note);
+
+        protected override NoteBase OptimizeNote(NoteBase note) => note;
+
+        protected override void IncreaseOctave()
+        {
+            switch (this.CurrentOctave)
+            {
+                case Octave.Low:
+                    this.CurrentOctave = Octave.High;
+                    break;
+                case Octave.High:
+                    break;
+                default: break;
+            }
+        }
+
+        protected override void DecreaseOctave()
+        {
+            switch (this.CurrentOctave)
+            {
+                case Octave.Low:
+                    break;
+                case Octave.High:
+                    this.CurrentOctave = Octave.Low;
+                    break;
+                default: break;
+            }
+        }
+
+        protected override void PressKey(GuildWarsControls key)
         {
             switch (key)
             {
@@ -21,10 +56,10 @@ namespace Nekres.Musician.Core.Instrument.Flute
                 case GuildWarsControls.HealingSkill:
                 case GuildWarsControls.UtilitySkill1:
                 case GuildWarsControls.UtilitySkill2:
-                    MusicianModule.ModuleInstance.MusicPlayer.PlaySound(_soundRepository.Get(key, _octave), true);
+                    MusicianModule.ModuleInstance.MusicPlayer.PlaySound(_soundRepository.Get(key, this.CurrentOctave), true);
                     break;
                 case GuildWarsControls.UtilitySkill3:
-                    if (_octave == FluteNote.Octaves.Low)
+                    if (this.CurrentOctave == Octave.Low)
                     {
                         IncreaseOctave();
                     }
@@ -41,41 +76,7 @@ namespace Nekres.Musician.Core.Instrument.Flute
             }
         }
 
-        private void IncreaseOctave()
-        {
-            switch (_octave)
-            {
-                case FluteNote.Octaves.None:
-                    break;
-                case FluteNote.Octaves.Low:
-                    _octave = FluteNote.Octaves.High;
-                    break;
-                case FluteNote.Octaves.High:
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
-        }
-
-        private void DecreaseOctave()
-        {
-            switch (_octave)
-            {
-                case FluteNote.Octaves.None:
-                    break;
-                case FluteNote.Octaves.Low:
-                    break;
-                case FluteNote.Octaves.High:
-                    _octave = FluteNote.Octaves.Low;
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
-        }
-
-
-        public void Dispose() {
-            _soundRepository?.Dispose();
+        public override void Dispose() {
         }
     }
 }

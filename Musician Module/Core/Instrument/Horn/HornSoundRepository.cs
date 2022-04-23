@@ -1,44 +1,42 @@
-using Blish_HUD.Controls.Intern;
-using Microsoft.Xna.Framework.Audio;
-using Nekres.Musician;
-using Nekres.Musician.Core.Instrument;
-using Nekres.Musician.Core.Instrument.Horn;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Blish_HUD.Controls.Intern;
+using Microsoft.Xna.Framework.Audio;
+using Nekres.Musician.Core.Domain;
 
-namespace Nekres.Musician_Module.Controls.Instrument
+namespace Nekres.Musician.Core.Instrument
 {
     public class HornSoundRepository : ISoundRepository
     {
         private readonly Dictionary<string, string> _map = new()
         {
             // Low Octave
-            {$"{GuildWarsControls.WeaponSkill1}{HornNote.Octaves.Low}", "E3"},
-            {$"{GuildWarsControls.WeaponSkill2}{HornNote.Octaves.Low}", "F3"},
-            {$"{GuildWarsControls.WeaponSkill3}{HornNote.Octaves.Low}", "G3"},
-            {$"{GuildWarsControls.WeaponSkill4}{HornNote.Octaves.Low}", "A3"},
-            {$"{GuildWarsControls.WeaponSkill5}{HornNote.Octaves.Low}", "B3"},
-            {$"{GuildWarsControls.HealingSkill}{HornNote.Octaves.Low}", "C4"},
-            {$"{GuildWarsControls.UtilitySkill1}{HornNote.Octaves.Low}", "D4"},
-            {$"{GuildWarsControls.UtilitySkill2}{HornNote.Octaves.Low}", "E4"},
+            {$"{GuildWarsControls.WeaponSkill1}{Octave.Low}", "E3"},
+            {$"{GuildWarsControls.WeaponSkill2}{Octave.Low}", "F3"},
+            {$"{GuildWarsControls.WeaponSkill3}{Octave.Low}", "G3"},
+            {$"{GuildWarsControls.WeaponSkill4}{Octave.Low}", "A3"},
+            {$"{GuildWarsControls.WeaponSkill5}{Octave.Low}", "B3"},
+            {$"{GuildWarsControls.HealingSkill}{Octave.Low}", "C4"},
+            {$"{GuildWarsControls.UtilitySkill1}{Octave.Low}", "D4"},
+            {$"{GuildWarsControls.UtilitySkill2}{Octave.Low}", "E4"},
             // Middle Octave
-            {$"{GuildWarsControls.WeaponSkill1}{HornNote.Octaves.Middle}", "E4"},
-            {$"{GuildWarsControls.WeaponSkill2}{HornNote.Octaves.Middle}", "F4"},
-            {$"{GuildWarsControls.WeaponSkill3}{HornNote.Octaves.Middle}", "G4"},
-            {$"{GuildWarsControls.WeaponSkill4}{HornNote.Octaves.Middle}", "A4"},
-            {$"{GuildWarsControls.WeaponSkill5}{HornNote.Octaves.Middle}", "B4"},
-            {$"{GuildWarsControls.HealingSkill}{HornNote.Octaves.Middle}", "C5"},
-            {$"{GuildWarsControls.UtilitySkill1}{HornNote.Octaves.Middle}", "D5"},
-            {$"{GuildWarsControls.UtilitySkill2}{HornNote.Octaves.Middle}", "E5"},
+            {$"{GuildWarsControls.WeaponSkill1}{Octave.Middle}", "E4"},
+            {$"{GuildWarsControls.WeaponSkill2}{Octave.Middle}", "F4"},
+            {$"{GuildWarsControls.WeaponSkill3}{Octave.Middle}", "G4"},
+            {$"{GuildWarsControls.WeaponSkill4}{Octave.Middle}", "A4"},
+            {$"{GuildWarsControls.WeaponSkill5}{Octave.Middle}", "B4"},
+            {$"{GuildWarsControls.HealingSkill}{Octave.Middle}", "C5"},
+            {$"{GuildWarsControls.UtilitySkill1}{Octave.Middle}", "D5"},
+            {$"{GuildWarsControls.UtilitySkill2}{Octave.Middle}", "E5"},
             // High Octave
-            {$"{GuildWarsControls.WeaponSkill1}{HornNote.Octaves.High}", "E5"},
-            {$"{GuildWarsControls.WeaponSkill2}{HornNote.Octaves.High}", "F5"},
-            {$"{GuildWarsControls.WeaponSkill3}{HornNote.Octaves.High}", "G5"},
-            {$"{GuildWarsControls.WeaponSkill4}{HornNote.Octaves.High}", "A5"},
-            {$"{GuildWarsControls.WeaponSkill5}{HornNote.Octaves.High}", "B5"},
-            {$"{GuildWarsControls.HealingSkill}{HornNote.Octaves.High}", "C6"},
-            {$"{GuildWarsControls.UtilitySkill1}{HornNote.Octaves.High}", "D6"},
-            {$"{GuildWarsControls.UtilitySkill2}{HornNote.Octaves.High}", "E6"}
+            {$"{GuildWarsControls.WeaponSkill1}{Octave.High}", "E5"},
+            {$"{GuildWarsControls.WeaponSkill2}{Octave.High}", "F5"},
+            {$"{GuildWarsControls.WeaponSkill3}{Octave.High}", "G5"},
+            {$"{GuildWarsControls.WeaponSkill4}{Octave.High}", "A5"},
+            {$"{GuildWarsControls.WeaponSkill5}{Octave.High}", "B5"},
+            {$"{GuildWarsControls.HealingSkill}{Octave.High}", "C6"},
+            {$"{GuildWarsControls.UtilitySkill1}{Octave.High}", "D6"},
+            {$"{GuildWarsControls.UtilitySkill2}{Octave.High}", "E6"}
         };
 
         private Dictionary<string, SoundEffectInstance> _sound;
@@ -48,7 +46,7 @@ namespace Nekres.Musician_Module.Controls.Instrument
             return _sound[id];
         }
 
-        public SoundEffectInstance Get(GuildWarsControls key, HornNote.Octaves octave)
+        public SoundEffectInstance Get(GuildWarsControls key, Octave octave)
         {
             return _sound[_map[$"{key}{octave}"]];
         }
