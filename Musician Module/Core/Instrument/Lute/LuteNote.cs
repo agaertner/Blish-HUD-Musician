@@ -39,6 +39,8 @@ namespace Nekres.Musician.Core.Instrument
 
         public static LuteNote From(RealNote note)
         {
+            if (note.Note == Note.Z)
+                return new LuteNote(GuildWarsControls.None, note.Octave);
             return Map[$"{note.Note}{note.Octave}"];
         }
     }

@@ -57,6 +57,8 @@ namespace Nekres.Musician
 
         private CornerIcon _moduleIcon;
 
+        private WindowTab _moduleTab;
+
         internal MusicPlayer MusicPlayer { get; private set; }
         internal MusicSheetFactory MusicSheetFactory { get; private set; }
 
@@ -91,23 +93,26 @@ namespace Nekres.Musician
 
         protected override async Task LoadAsync()
         {
-            await MusicSheetFactory.LoadIndex();
+            await MusicSheetFactory.LoadAsync();
             await MusicPlayer.LoadAsync();
         }
 
         protected override void OnModuleLoaded(EventArgs e)
         {
+            var icon = ContentsManager.GetTexture("musician_icon.png");
             _moduleIcon = new CornerIcon(ContentsManager.GetTexture("musician_icon.png"), this.Name);
+
+            _moduleTab = Overlay.BlishHudWindow.AddTab(this.Name, icon, () => new LibraryView(new LibraryModel(MusicSheetFactory)));
+
             base.OnModuleLoaded(e);
         }
 
         protected override void Unload()
         {
+            Overlay.BlishHudWindow.RemoveTab(_moduleTab);
             _moduleIcon?.Dispose();
             MusicPlayer?.Dispose();
             ModuleInstance = null;
         }
-
     }
-
 }

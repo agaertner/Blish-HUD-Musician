@@ -1,21 +1,22 @@
-﻿using System;
+﻿using Blish_HUD;
+using Blish_HUD.Controls;
+using Nekres.Musician.Core.Models;
+using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Blish_HUD;
-using Blish_HUD.Controls;
-using Microsoft.Xna.Framework;
-using Nekres.Musician.Core.Models;
-using Nekres.Musician.Properties;
-using Newtonsoft.Json;
 
 namespace Nekres.Musician.UI
 {
     internal class MusicSheetFactory : IDisposable
     {
-        public event EventHandler<ValueEventArgs<Guid>> OnIndexChanged;
+        public event EventHandler<ValueEventArgs<MusicSheetBase>> OnSheetUpdated;
+        public event EventHandler<ValueEventArgs<Guid>> OnSheetRemoved;
+
+        private FileSystemWatcher _xmlWatcher;
 
         private IList<MusicSheet> _fetched;
 
@@ -31,9 +32,40 @@ namespace Nekres.Musician.UI
             _fetched = new List<MusicSheet>();
             _index = new Dictionary<Guid, MusicSheetBase>();
             this.CacheDir = cacheDir;
+
+            _xmlWatcher = new FileSystemWatcher(cacheDir)
+            {
+                NotifyFilter = NotifyFilters.LastWrite | NotifyFilters.FileName,
+                Filter = "*.xml",
+                EnableRaisingEvents = true
+            };
+            _xmlWatcher.Created += OnXmlCreated;
+            _xmlWatcher.Changed += OnXmlCreated;
         }
 
-        public async Task LoadIndex()
+        private async void OnXmlCreated(object sender, FileSystemEventArgs e) => await ConvertXml(e.FullPath);
+
+        private async Task ConvertXml(string filePath)
+        {
+            var musicSheet = MusicSheet.FromXml(filePath);
+            if (musicSheet == null) return;
+            var json = JsonConvert.SerializeObject(musicSheet, Formatting.Indented);
+            var fileName = Path.Combine(Path.GetDirectoryName(filePath), $"{musicSheet.Id}.json");
+            await FileUtil.WriteAllTextAsync(fileName, json);
+            await FileUtil.DeleteAsync(filePath, false);
+
+            AddOrUpdate(musicSheet);
+        }
+
+        public async Task LoadAsync()
+        {
+            await LoadIndex();
+
+            var initialFiles = Directory.EnumerateFiles(this.CacheDir).Where(s => Path.GetExtension(s).Equals(".xml"));
+            foreach (var filePath in initialFiles) await ConvertXml(filePath);
+        }
+
+        private async Task LoadIndex()
         {
             var filePath = Path.Combine(this.CacheDir, _indexFileName);
             if (!File.Exists(filePath))
@@ -50,8 +82,6 @@ namespace Nekres.Musician.UI
 
                 if (_index == null)
                     throw new JsonException("No data after deserialization. Possibly corrupted Json.");
-
-                OnIndexChanged?.Invoke(this, new ValueEventArgs<Guid>(Guid.Empty));
             }
             catch (Exception ex) when (ex is IOException or InvalidOperationException or JsonException)
             {
@@ -60,17 +90,37 @@ namespace Nekres.Musician.UI
             }
         }
 
+        private void AddOrUpdate(MusicSheet musicSheet)
+        {
+            if (_index.TryGetValue(musicSheet.Id, out var sheet))
+            {
+                sheet.Artist = sheet.Artist;
+                sheet.Title = sheet.Title;
+                sheet.User = sheet.User;
+                return;
+            }
+
+            var info = musicSheet.GetBaseInfo();
+            _index.Add(musicSheet.Id, info);
+
+            OnSheetUpdated?.Invoke(this, new ValueEventArgs<MusicSheetBase>(info));
+            this.SaveIndex();
+        }
+
         private void RemoveFromIndex(Guid key)
         {
             if (_index.ContainsKey(key))
                 _index.Remove(key);
 
-            OnIndexChanged?.Invoke(this, new ValueEventArgs<Guid>(key));
+            OnSheetRemoved?.Invoke(this, new ValueEventArgs<Guid>(key));
             this.SaveIndex();
         }
 
         public void Dispose()
         {
+            _xmlWatcher.Created -= OnXmlCreated;
+            _xmlWatcher.Changed -= OnXmlCreated;
+            _xmlWatcher.Dispose();
         }
 
         public async Task<MusicSheet> FromCache(Guid id)

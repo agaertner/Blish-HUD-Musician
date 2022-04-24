@@ -1,14 +1,14 @@
 ﻿using System;
 using Blish_HUD.Controls.Intern;
 using Nekres.Musician.Core.Domain;
-
+using static Blish_HUD.Controls.Intern.GuildWarsControls;
 namespace Nekres.Musician.Core.Instrument
 {
-    public class HarpPreview : InstrumentBase
+    internal class HarpPreview : InstrumentBase
     {
-        private readonly HarpSoundRepository _soundRepository;
+        private readonly ISoundRepository _soundRepository;
 
-        public HarpPreview(HarpSoundRepository soundRepo)
+        public HarpPreview(ISoundRepository soundRepo)
         {
             this.CurrentOctave = Octave.Middle;
             _soundRepository = soundRepo;
@@ -16,7 +16,14 @@ namespace Nekres.Musician.Core.Instrument
 
         protected override NoteBase ConvertNote(RealNote note) => HarpNote.From(note);
 
-        protected override NoteBase OptimizeNote(NoteBase note) => note;
+        protected override NoteBase OptimizeNote(NoteBase note)
+        {
+            if (note.Equals(new HarpNote(WeaponSkill1, Octave.Middle)) && CurrentOctave == Octave.Low)
+                note = new HarpNote(UtilitySkill2, Octave.Low);
+            else if (note.Equals(new HarpNote(WeaponSkill1, Octave.High)) && CurrentOctave == Octave.Middle)
+                note = new HarpNote(UtilitySkill2, Octave.Middle);
+            return note;
+        }
 
         protected override void IncreaseOctave()
         {

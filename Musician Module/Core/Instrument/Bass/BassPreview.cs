@@ -1,13 +1,13 @@
 ﻿using Blish_HUD.Controls.Intern;
 using Nekres.Musician.Core.Domain;
-
+using static Blish_HUD.Controls.Intern.GuildWarsControls;
 namespace Nekres.Musician.Core.Instrument
 {
-    public class BassPreview : InstrumentBase
+    internal class BassPreview : InstrumentBase
     {
-        private readonly BassSoundRepository _soundRepository;
+        private readonly ISoundRepository _soundRepository;
 
-        public BassPreview(BassSoundRepository soundRepo)
+        public BassPreview(ISoundRepository soundRepo)
         {
             this.CurrentOctave = Octave.Low;
             _soundRepository = soundRepo;
@@ -15,7 +15,14 @@ namespace Nekres.Musician.Core.Instrument
 
         protected override NoteBase ConvertNote(RealNote note) => BassNote.From(note);
 
-        protected override NoteBase OptimizeNote(NoteBase note) => note;
+        protected override NoteBase OptimizeNote(NoteBase note)
+        {
+            if (note.Equals(new BassNote(WeaponSkill1, Octave.High)) && this.CurrentOctave == Octave.Low)
+                note = new BassNote(UtilitySkill2, Octave.Low);
+            else if (note.Equals(new BassNote(UtilitySkill2, Octave.Low)) && this.CurrentOctave == Octave.High)
+                note = new BassNote(WeaponSkill1, Octave.High);
+            return note;
+        }
 
         protected override void IncreaseOctave()
         {

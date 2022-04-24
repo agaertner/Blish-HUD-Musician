@@ -39,13 +39,7 @@ namespace Nekres.Musician.Core.Instrument
             {$"{GuildWarsControls.UtilitySkill2}{Octave.High}", "D7"}
         };
 
-
         private Dictionary<string, SoundEffectInstance> _sound;
-
-        public SoundEffectInstance Get(string id)
-        {
-            return _sound[id];
-        }
 
         public SoundEffectInstance Get(GuildWarsControls key, Octave octave)
         {

@@ -8,28 +8,13 @@ using Keyboard = Blish_HUD.Controls.Intern.Keyboard;
 
 namespace Nekres.Musician.Core.Instrument
 {
-    public enum InstrumentSkillType
-    {
-        None,
-        Note,
-        IncreaseOctave,
-        DecreaseOctave,
-        StopPlaying
-    }
-    public enum InstrumentMode
-    {
-        None,
-        Preview,
-        Practice,
-        Emulate
-    }
-
     public abstract class InstrumentBase : IDisposable
     {
         protected readonly TimeSpan NoteTimeout = TimeSpan.FromMilliseconds(5);
         protected readonly TimeSpan OctaveTimeout = TimeSpan.FromTicks(500);
 
         protected Octave CurrentOctave { get; set; }
+
 
         protected virtual void PressKey(GuildWarsControls key)
         {

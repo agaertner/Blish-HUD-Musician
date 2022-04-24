@@ -1,17 +1,10 @@
 ﻿using Newtonsoft.Json;
 using System;
 using System.Runtime.Serialization;
+using Newtonsoft.Json.Converters;
 
 namespace Nekres.Musician.Core.Models
 {
-    public enum Algorithm
-    {
-        [EnumMember(Value = "favor-notes")]
-        FavorNotes,
-        [EnumMember(Value = "favor-chords")]
-        FavorChords
-    }
-
     public enum Instrument
     {
         [EnumMember(Value = "bass")]
@@ -43,6 +36,9 @@ namespace Nekres.Musician.Core.Models
 
         [JsonProperty("user")]
         public string User { get; set; }
+
+        [JsonProperty("instrument"), JsonConverter(typeof(StringEnumConverter))]
+        public Instrument Instrument { get; set; }
 
         public MusicSheetBase()
         {

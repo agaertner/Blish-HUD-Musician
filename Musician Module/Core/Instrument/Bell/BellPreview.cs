@@ -1,13 +1,13 @@
 ﻿using Blish_HUD.Controls.Intern;
 using Nekres.Musician.Core.Domain;
-
+using static Blish_HUD.Controls.Intern.GuildWarsControls;
 namespace Nekres.Musician.Core.Instrument
 {
-    public class BellPreview : InstrumentBase
+    internal class BellPreview : InstrumentBase
     {
-        private readonly BellSoundRepository _soundRepository;
+        private readonly ISoundRepository _soundRepository;
 
-        public BellPreview(BellSoundRepository soundRepo)
+        public BellPreview(ISoundRepository soundRepo)
         {
             this.CurrentOctave = Octave.Middle;
             _soundRepository = soundRepo;
@@ -15,7 +15,18 @@ namespace Nekres.Musician.Core.Instrument
 
         protected override NoteBase ConvertNote(RealNote note) => BellNote.From(note);
 
-        protected override NoteBase OptimizeNote(NoteBase note) => note;
+        protected override NoteBase OptimizeNote(NoteBase note)
+        {
+            if (note.Equals(new BellNote(WeaponSkill1, Octave.High)) && CurrentOctave == Octave.Middle)
+                note = new BellNote(UtilitySkill2, Octave.Middle);
+            else if (note.Equals(new BellNote(UtilitySkill2, Octave.Middle)) && CurrentOctave == Octave.High)
+                note = new BellNote(WeaponSkill1, Octave.High);
+            else if (note.Equals(new BellNote(WeaponSkill1, Octave.Middle)) && CurrentOctave == Octave.Low)
+                note = new BellNote(UtilitySkill2, Octave.Low);
+            else if (note.Equals(new BellNote(UtilitySkill2, Octave.Low)) && CurrentOctave == Octave.Middle)
+                note = new BellNote(WeaponSkill1, Octave.Middle);
+            return note;
+        }
 
         protected override void IncreaseOctave()
         {

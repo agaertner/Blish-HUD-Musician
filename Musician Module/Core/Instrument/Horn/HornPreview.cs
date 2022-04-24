@@ -1,14 +1,14 @@
 ﻿using System;
 using Blish_HUD.Controls.Intern;
 using Nekres.Musician.Core.Domain;
-
+using static Blish_HUD.Controls.Intern.GuildWarsControls;
 namespace Nekres.Musician.Core.Instrument
 {
-    public class HornPreview : InstrumentBase
+    internal class HornPreview : InstrumentBase
     {
-        private readonly HornSoundRepository _soundRepository;
+        private readonly ISoundRepository _soundRepository;
 
-        public HornPreview(HornSoundRepository soundRepo)
+        public HornPreview(ISoundRepository soundRepo)
         {
             this.CurrentOctave = Octave.Middle;
             _soundRepository = soundRepo;
@@ -18,7 +18,15 @@ namespace Nekres.Musician.Core.Instrument
 
         protected override NoteBase OptimizeNote(NoteBase note)
         {
-            throw new NotImplementedException();
+            if (note.Equals(new HornNote(WeaponSkill1, Octave.High)) && CurrentOctave == Octave.Middle)
+                note = new HornNote(UtilitySkill2, Octave.Middle);
+            else if (note.Equals(new HornNote(UtilitySkill2, Octave.Middle)) && CurrentOctave == Octave.High)
+                note = new HornNote(WeaponSkill1, Octave.High);
+            else if (note.Equals(new HornNote(WeaponSkill1, Octave.Middle)) && CurrentOctave == Octave.Low)
+                note = new HornNote(UtilitySkill2, Octave.Low);
+            else if (note.Equals(new HornNote(UtilitySkill2, Octave.Low)) && CurrentOctave == Octave.Middle)
+                note = new HornNote(WeaponSkill1, Octave.Middle);
+            return note;
         }
 
         protected override void IncreaseOctave()
@@ -33,8 +41,7 @@ namespace Nekres.Musician.Core.Instrument
                     break;
                 case Octave.High:
                     break;
-                default:
-                    throw new ArgumentOutOfRangeException();
+                default: break;
             }
         }
 
@@ -50,8 +57,7 @@ namespace Nekres.Musician.Core.Instrument
                 case Octave.High:
                     this.CurrentOctave = Octave.Middle;
                     break;
-                default:
-                    throw new ArgumentOutOfRangeException();
+                default: break;
             }
         }
 

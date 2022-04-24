@@ -39,7 +39,7 @@ namespace Nekres.Musician.Core.Domain
             var notes = NoteRegex.Matches(chord);
             
             // Parse the duration
-            var length = new Fraction(int.Parse(nominator), int.Parse(denominator));
+            var length = Fraction.Parse(nominator, denominator);
 
             // Return the chord
             return new Chord(notes.Cast<Match>().Select(x => RealNote.Deserialize(x.Groups[1].Value)), length);

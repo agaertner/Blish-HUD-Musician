@@ -32,11 +32,6 @@ namespace Nekres.Musician.Core.Instrument
 
         private Dictionary<string, SoundEffectInstance> _sound;
 
-        public SoundEffectInstance Get(string id)
-        {
-            return _sound[id];
-        }
-
         public SoundEffectInstance Get(GuildWarsControls key, Octave octave)
         {
             return _sound[_map[$"{key}{octave}"]];

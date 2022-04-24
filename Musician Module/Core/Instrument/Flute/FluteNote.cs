@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using Blish_HUD.Controls.Intern;
 using Nekres.Musician.Core.Domain;
 
@@ -17,10 +18,14 @@ namespace Nekres.Musician.Core.Instrument
             {$"{Note.C}{Octave.Middle}", new FluteNote(GuildWarsControls.HealingSkill, Octave.Low)},
             {$"{Note.D}{Octave.Middle}", new FluteNote(GuildWarsControls.UtilitySkill1, Octave.Low)},
             {$"{Note.E}{Octave.Middle}", new FluteNote(GuildWarsControls.UtilitySkill2, Octave.Low)},
-            {$"{Note.F}{Octave.Middle}", new FluteNote(GuildWarsControls.WeaponSkill1, Octave.High)},
-            {$"{Note.G}{Octave.Middle}", new FluteNote(GuildWarsControls.WeaponSkill2, Octave.High)},
-            {$"{Note.A}{Octave.Middle}", new FluteNote(GuildWarsControls.WeaponSkill3, Octave.High)},
-            {$"{Note.B}{Octave.Middle}", new FluteNote(GuildWarsControls.WeaponSkill4, Octave.High)},
+
+            // High Octave
+            {$"{Note.F}{Octave.Middle}", new FluteNote(GuildWarsControls.WeaponSkill2, Octave.High)},
+            {$"{Note.G}{Octave.Middle}", new FluteNote(GuildWarsControls.WeaponSkill3, Octave.High)},
+            {$"{Note.A}{Octave.Middle}", new FluteNote(GuildWarsControls.WeaponSkill4, Octave.High)},
+            {$"{Note.B}{Octave.Middle}", new FluteNote(GuildWarsControls.WeaponSkill5, Octave.High)},
+
+            // Highest Octave
             {$"{Note.C}{Octave.High}", new FluteNote(GuildWarsControls.HealingSkill, Octave.High)},
             {$"{Note.D}{Octave.High}", new FluteNote(GuildWarsControls.UtilitySkill1, Octave.High)},
             {$"{Note.E}{Octave.High}", new FluteNote(GuildWarsControls.UtilitySkill2, Octave.High)}
@@ -33,6 +38,8 @@ namespace Nekres.Musician.Core.Instrument
 
         public static FluteNote From(RealNote note)
         {
+            if (note.Note == Note.Z) 
+                return new FluteNote(GuildWarsControls.None, note.Octave);
             return Map[$"{note.Note}{note.Octave}"];
         }
     }

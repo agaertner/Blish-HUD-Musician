@@ -39,6 +39,8 @@ namespace Nekres.Musician.Core.Instrument
 
         public static HarpNote From(RealNote note)
         {
+            if (note.Note == Note.Z)
+                return new HarpNote(GuildWarsControls.None, note.Octave);
             return Map[$"{note.Note}{note.Octave}"];
         }
     }

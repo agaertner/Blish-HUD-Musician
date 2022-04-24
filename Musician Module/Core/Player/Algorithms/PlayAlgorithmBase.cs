@@ -21,6 +21,7 @@ namespace Nekres.Musician.Core.Player.Algorithms
         {
             _abort = true;
             _stopwatch.Stop();
+            MusicianModule.ModuleInstance.MusicPlayer?.StopSound();
         }
     }
 }

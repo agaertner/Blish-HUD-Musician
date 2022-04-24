@@ -1,13 +1,14 @@
 ﻿using Blish_HUD.Controls.Intern;
 using Nekres.Musician.Core.Domain;
+using static Blish_HUD.Controls.Intern.GuildWarsControls;
 
 namespace Nekres.Musician.Core.Instrument
 {
-    public class LutePreview : InstrumentBase
+    internal class LutePreview : InstrumentBase
     {
-        private readonly LuteSoundRepository _soundRepository;
+        private readonly ISoundRepository _soundRepository;
 
-        public LutePreview(LuteSoundRepository soundRepo)
+        public LutePreview(ISoundRepository soundRepo)
         {
             this.CurrentOctave = Octave.Middle;
             _soundRepository = soundRepo;
@@ -15,7 +16,18 @@ namespace Nekres.Musician.Core.Instrument
 
         protected override NoteBase ConvertNote(RealNote note) => LuteNote.From(note);
 
-        protected override NoteBase OptimizeNote(NoteBase note) => note;
+        protected override NoteBase OptimizeNote(NoteBase note)
+        {
+            if (note.Equals(new LuteNote(WeaponSkill1, Octave.High)) && CurrentOctave == Octave.Middle)
+                note = new LuteNote(UtilitySkill2, Octave.Middle);
+            else if (note.Equals(new LuteNote(UtilitySkill2, Octave.Middle)) && CurrentOctave == Octave.High)
+                note = new LuteNote(WeaponSkill1, Octave.High);
+            else if (note.Equals(new LuteNote(WeaponSkill1, Octave.Middle)) && CurrentOctave == Octave.Low)
+                note = new LuteNote(UtilitySkill2, Octave.Low);
+            else if (note.Equals(new LuteNote(UtilitySkill2, Octave.Low)) && CurrentOctave == Octave.Middle)
+                note = new LuteNote(WeaponSkill1, Octave.Middle);
+            return note;
+        }
 
         protected override void IncreaseOctave()
         {
@@ -53,20 +65,20 @@ namespace Nekres.Musician.Core.Instrument
         {
             switch (key)
             {
-                case GuildWarsControls.WeaponSkill1:
-                case GuildWarsControls.WeaponSkill2:
-                case GuildWarsControls.WeaponSkill3:
-                case GuildWarsControls.WeaponSkill4:
-                case GuildWarsControls.WeaponSkill5:
-                case GuildWarsControls.HealingSkill:
-                case GuildWarsControls.UtilitySkill1:
-                case GuildWarsControls.UtilitySkill2:
+                case WeaponSkill1:
+                case WeaponSkill2:
+                case WeaponSkill3:
+                case WeaponSkill4:
+                case WeaponSkill5:
+                case HealingSkill:
+                case UtilitySkill1:
+                case UtilitySkill2:
                     MusicianModule.ModuleInstance.MusicPlayer.PlaySound(_soundRepository.Get(key, this.CurrentOctave));
                     break;
-                case GuildWarsControls.UtilitySkill3:
+                case UtilitySkill3:
                     DecreaseOctave();
                     break;
-                case GuildWarsControls.EliteSkill:
+                case EliteSkill:
                     IncreaseOctave();
                     break;
                 default: break;

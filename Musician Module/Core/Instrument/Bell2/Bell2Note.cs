@@ -32,6 +32,8 @@ namespace Nekres.Musician.Core.Instrument
 
         public static Bell2Note From(RealNote note)
         {
+            if (note.Note == Note.Z)
+                return new Bell2Note(GuildWarsControls.None, note.Octave);
             return Map[$"{note.Note}{note.Octave}"];
         }
     }

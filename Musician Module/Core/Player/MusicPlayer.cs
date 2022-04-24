@@ -60,11 +60,62 @@ namespace Nekres.Musician.Core.Player
             _activeSfx?.Stop();
         }
 
-        public void Play(MusicSheet musicSheet, InstrumentBase instrument)
+        public void PlayPreview(MusicSheet musicSheet) => Play(musicSheet, GetInstrumentPreview(musicSheet.Instrument));
+
+        public void PlayEmulate(MusicSheet musicSheet) => Play(musicSheet, GetInstrumentEmulate(musicSheet.Instrument));
+
+        private void Play(MusicSheet musicSheet, InstrumentBase instrument)
         {
             _algorithm?.Dispose();
-            _algorithm = musicSheet.Algorithm == Models.Algorithm.FavorChords ? new FavorChordsAlgorithm() : new FavorNotesAlgorithm();
+            _algorithm = musicSheet.Algorithm == Algorithm.FavorChords ? new FavorChordsAlgorithm() : new FavorNotesAlgorithm();
             var worker = new Thread(() => _algorithm.Play(instrument, musicSheet.Tempo, musicSheet.Melody.ToArray()));
+            worker.Start();
+        }
+
+        private InstrumentBase GetInstrumentEmulate(Models.Instrument instrument)
+        {
+            switch (instrument)
+            {
+                case Models.Instrument.Bass:
+                    return new Bass();
+                case Models.Instrument.Bell:
+                    return new Bell();
+                case Models.Instrument.Bell2:
+                    return new Bell2();
+                case Models.Instrument.Flute:
+                    return new Flute();
+                case Models.Instrument.Harp:
+                    return new Harp();
+                case Models.Instrument.Horn:
+                    return new Horn();
+                case Models.Instrument.Lute:
+                    return new Lute();
+                default: break;
+            }
+            return null;
+        }
+
+        private InstrumentBase GetInstrumentPreview(Models.Instrument instrument)
+        {
+            switch (instrument)
+            {
+                case Models.Instrument.Bass:
+                    return new BassPreview(_soundRepositories[instrument]);
+                case Models.Instrument.Bell:
+                    return new BellPreview(_soundRepositories[instrument]);
+                case Models.Instrument.Bell2:
+                    return new Bell2Preview(_soundRepositories[instrument]);
+                case Models.Instrument.Flute:
+                    return new FlutePreview(_soundRepositories[instrument]);
+                case Models.Instrument.Harp:
+                    return new HarpPreview(_soundRepositories[instrument]);
+                case Models.Instrument.Horn:
+                    return new HornPreview(_soundRepositories[instrument]);
+                case Models.Instrument.Lute:
+                    return new LutePreview(_soundRepositories[instrument]);
+                default: break;
+            }
+            return null;
         }
     }
 }

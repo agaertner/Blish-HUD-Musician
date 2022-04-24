@@ -110,7 +110,7 @@ namespace Nekres.Musician.Core.Domain
                 return true;
             }
 
-            var octaveMarks = text.Substring(1, text.Length);
+            var octaveMarks = text.Substring(1, text.Length - 1);
 
             switch (octaveMarks[0])
             {
