@@ -44,75 +44,94 @@ namespace Nekres.Musician.Core.Instrument
 
         public void Dispose() {
             _map?.Clear();
+            if (_sound == null) return;
             foreach (var snd in _sound)
                 snd.Value?.Dispose();
         }
 
-        public async Task Initialize()
+        public async Task<ISoundRepository> Initialize()
         {
-            await Task.Run(() => _sound = new()
+            return await Task.Run(() =>
             {
+                _sound ??= new Dictionary<string, SoundEffectInstance>
                 {
-                    "E4",
-                    MusicianModule.ModuleInstance.ContentsManager.GetSound(@"instruments\Flute\E4.wav").CreateInstance()
-                },
-                {
-                    "F4",
-                    MusicianModule.ModuleInstance.ContentsManager.GetSound(@"instruments\Flute\F4.wav").CreateInstance()
-                },
-                {
-                    "G4",
-                    MusicianModule.ModuleInstance.ContentsManager.GetSound(@"instruments\Flute\G4.wav").CreateInstance()
-                },
-                {
-                    "A4",
-                    MusicianModule.ModuleInstance.ContentsManager.GetSound(@"instruments\Flute\A4.wav").CreateInstance()
-                },
-                {
-                    "B4",
-                    MusicianModule.ModuleInstance.ContentsManager.GetSound(@"instruments\Flute\B4.wav").CreateInstance()
-                },
-                {
-                    "C5",
-                    MusicianModule.ModuleInstance.ContentsManager.GetSound(@"instruments\Flute\C5.wav").CreateInstance()
-                },
-                {
-                    "D5",
-                    MusicianModule.ModuleInstance.ContentsManager.GetSound(@"instruments\Flute\D5.wav").CreateInstance()
-                },
-                {
-                    "E5",
-                    MusicianModule.ModuleInstance.ContentsManager.GetSound(@"instruments\Flute\E5.wav").CreateInstance()
-                },
-                {
-                    "F5",
-                    MusicianModule.ModuleInstance.ContentsManager.GetSound(@"instruments\Flute\F5.wav").CreateInstance()
-                },
-                {
-                    "G5",
-                    MusicianModule.ModuleInstance.ContentsManager.GetSound(@"instruments\Flute\G5.wav").CreateInstance()
-                },
-                {
-                    "A5",
-                    MusicianModule.ModuleInstance.ContentsManager.GetSound(@"instruments\Flute\A5.wav").CreateInstance()
-                },
-                {
-                    "B5",
-                    MusicianModule.ModuleInstance.ContentsManager.GetSound(@"instruments\Flute\B5.wav").CreateInstance()
-                },
-                {
-                    "C6",
-                    MusicianModule.ModuleInstance.ContentsManager.GetSound(@"instruments\Flute\C6.wav").CreateInstance()
-                },
-                {
-                    "D6",
-                    MusicianModule.ModuleInstance.ContentsManager.GetSound(@"instruments\Flute\D6.wav").CreateInstance()
-                },
-                {
-                    "E6",
-                    MusicianModule.ModuleInstance.ContentsManager.GetSound(@"instruments\Flute\E6.wav").CreateInstance()
-                }
-
+                    {
+                        "E4",
+                        MusicianModule.ModuleInstance.ContentsManager.GetSound(@"instruments\Flute\E4.wav")
+                            .CreateInstance()
+                    },
+                    {
+                        "F4",
+                        MusicianModule.ModuleInstance.ContentsManager.GetSound(@"instruments\Flute\F4.wav")
+                            .CreateInstance()
+                    },
+                    {
+                        "G4",
+                        MusicianModule.ModuleInstance.ContentsManager.GetSound(@"instruments\Flute\G4.wav")
+                            .CreateInstance()
+                    },
+                    {
+                        "A4",
+                        MusicianModule.ModuleInstance.ContentsManager.GetSound(@"instruments\Flute\A4.wav")
+                            .CreateInstance()
+                    },
+                    {
+                        "B4",
+                        MusicianModule.ModuleInstance.ContentsManager.GetSound(@"instruments\Flute\B4.wav")
+                            .CreateInstance()
+                    },
+                    {
+                        "C5",
+                        MusicianModule.ModuleInstance.ContentsManager.GetSound(@"instruments\Flute\C5.wav")
+                            .CreateInstance()
+                    },
+                    {
+                        "D5",
+                        MusicianModule.ModuleInstance.ContentsManager.GetSound(@"instruments\Flute\D5.wav")
+                            .CreateInstance()
+                    },
+                    {
+                        "E5",
+                        MusicianModule.ModuleInstance.ContentsManager.GetSound(@"instruments\Flute\E5.wav")
+                            .CreateInstance()
+                    },
+                    {
+                        "F5",
+                        MusicianModule.ModuleInstance.ContentsManager.GetSound(@"instruments\Flute\F5.wav")
+                            .CreateInstance()
+                    },
+                    {
+                        "G5",
+                        MusicianModule.ModuleInstance.ContentsManager.GetSound(@"instruments\Flute\G5.wav")
+                            .CreateInstance()
+                    },
+                    {
+                        "A5",
+                        MusicianModule.ModuleInstance.ContentsManager.GetSound(@"instruments\Flute\A5.wav")
+                            .CreateInstance()
+                    },
+                    {
+                        "B5",
+                        MusicianModule.ModuleInstance.ContentsManager.GetSound(@"instruments\Flute\B5.wav")
+                            .CreateInstance()
+                    },
+                    {
+                        "C6",
+                        MusicianModule.ModuleInstance.ContentsManager.GetSound(@"instruments\Flute\C6.wav")
+                            .CreateInstance()
+                    },
+                    {
+                        "D6",
+                        MusicianModule.ModuleInstance.ContentsManager.GetSound(@"instruments\Flute\D6.wav")
+                            .CreateInstance()
+                    },
+                    {
+                        "E6",
+                        MusicianModule.ModuleInstance.ContentsManager.GetSound(@"instruments\Flute\E6.wav")
+                            .CreateInstance()
+                    }
+                };
+                return this;
             });
         }
     }

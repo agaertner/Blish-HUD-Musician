@@ -20,10 +20,6 @@ namespace Nekres.Musician.Core.Domain
 
         public IEnumerable<RealNote> Notes { get; }
 
-        public override string ToString()
-        {
-            return $"{string.Join(":", Notes)} {Length}";
-        }
         public static Chord Parse(string text)
         {
             var notesAndDuration = NotesAndDurationRegex.Match(text);
@@ -45,7 +41,7 @@ namespace Nekres.Musician.Core.Domain
             return new Chord(notes.Cast<Match>().Select(x => RealNote.Deserialize(x.Groups[1].Value)), length);
         }
 
-        public string Serialize()
+        public override string ToString()
         {
             var stringBuilder = new StringBuilder();
 

@@ -31,9 +31,7 @@ namespace Nekres.Musician.Core.Instrument
             if (!RequiresAction(note)) return;
 
             if (note.Key == GuildWarsControls.None)
-            {
                 PressKey(GuildWarsControls.EliteSkill);
-            }
             else
             {
                 note = OptimizeNote(note);

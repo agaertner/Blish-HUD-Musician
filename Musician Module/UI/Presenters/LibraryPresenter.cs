@@ -18,7 +18,7 @@ namespace Nekres.Musician.UI.Presenters
             model.MusicSheetFactory.OnSheetRemoved += OnSheetRemoved;
         }
 
-        private void OnSheetUpdated(object o, ValueEventArgs<MusicSheetBase> e)
+        private void OnSheetUpdated(object o, ValueEventArgs<MusicSheetModel> e)
         {
             var sheet = this.View.MelodyFlowPanel.Children.Where(x => x.GetType() == typeof(SheetButton)).Cast<SheetButton>().FirstOrDefault(y => y.Id.Equals(e.Value.Id));
             if (sheet != null)

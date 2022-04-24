@@ -6,9 +6,9 @@ using Nekres.Musician.Core.Domain;
 
 namespace Nekres.Musician.Core.Instrument
 {
-    internal interface ISoundRepository : IDisposable
+    public interface ISoundRepository : IDisposable
     {
-        Task Initialize();
+        Task<ISoundRepository> Initialize();
         SoundEffectInstance Get(GuildWarsControls key, Octave octave);
     }
 }

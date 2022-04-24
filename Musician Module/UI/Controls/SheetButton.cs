@@ -6,9 +6,10 @@ using Blish_HUD.Input;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Nekres.Musician.Core.Models;
+using Nekres.Musician.UI.Models;
 
 namespace Nekres.Musician.Controls {
-    public class SheetButton : DetailsButton
+    internal class SheetButton : DetailsButton
     {
         public event EventHandler<EventArgs> OnPracticeClick;
         public event EventHandler<EventArgs> OnEmulateClick;
@@ -58,7 +59,7 @@ namespace Nekres.Musician.Controls {
         private Rectangle _previewButtonBounds;
         private bool _mouseOverPreview;
 
-        public SheetButton(MusicSheetBase sheet)
+        public SheetButton(MusicSheetModel sheet)
         {
             Id = sheet.Id;
             Artist = sheet.Artist;

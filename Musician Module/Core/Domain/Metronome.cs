@@ -23,6 +23,8 @@ namespace Nekres.Musician.Core.Domain
                 .Multiply(4);
         }
 
+        public override string ToString() => $"{Tempo} {BeatsPerMeasure}";
+
         public static Metronome FromString(string s)
         {
             var val = s.Split(' ');

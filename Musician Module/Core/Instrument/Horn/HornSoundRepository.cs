@@ -48,15 +48,16 @@ namespace Nekres.Musician.Core.Instrument
 
         public void Dispose() {
             _map?.Clear();
+            if (_sound == null) return;
             foreach (var snd in _sound)
                 snd.Value?.Dispose();
         }
 
-        public async Task Initialize()
+        public async Task<ISoundRepository> Initialize()
         {
-            await Task.Run(() =>
+            return await Task.Run(() =>
             {
-                _sound = new()
+                _sound = new Dictionary<string, SoundEffectInstance>
                 {
                     { "E3", MusicianModule.ModuleInstance.ContentsManager.GetSound(@"instruments\Horn\E3.wav").CreateInstance() },
                     { "F3", MusicianModule.ModuleInstance.ContentsManager.GetSound(@"instruments\Horn\F3.wav").CreateInstance() },
@@ -81,6 +82,7 @@ namespace Nekres.Musician.Core.Instrument
                     { "D6", MusicianModule.ModuleInstance.ContentsManager.GetSound(@"instruments\Horn\D6.wav").CreateInstance() },
                     { "E6", MusicianModule.ModuleInstance.ContentsManager.GetSound(@"instruments\Horn\E6.wav").CreateInstance() }
                 };
+                return this;
             });
         }
     }

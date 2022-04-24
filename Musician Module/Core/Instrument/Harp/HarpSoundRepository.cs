@@ -38,9 +38,9 @@ namespace Nekres.Musician.Core.Instrument
 
         private Dictionary<string, SoundEffectInstance> _sound;
 
-        public async Task Initialize()
+        public async Task<ISoundRepository> Initialize()
         {
-            await Task.Run(() =>
+            return await Task.Run(() =>
             {
                 _sound = new Dictionary<string, SoundEffectInstance>
                 {
@@ -67,6 +67,7 @@ namespace Nekres.Musician.Core.Instrument
                     { "B5", MusicianModule.ModuleInstance.ContentsManager.GetSound(@"instruments\Harp\B5.wav").CreateInstance() },
                     { "C6", MusicianModule.ModuleInstance.ContentsManager.GetSound(@"instruments\Harp\C6.wav").CreateInstance() }
                 };
+                return this;
             });
         }
 
@@ -77,6 +78,7 @@ namespace Nekres.Musician.Core.Instrument
 
         public void Dispose() {
             _map?.Clear();
+            if (_sound == null) return;
             foreach (var snd in _sound)
                 snd.Value?.Dispose();
         }

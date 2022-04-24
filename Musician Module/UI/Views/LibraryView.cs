@@ -5,6 +5,7 @@ using Microsoft.Xna.Framework;
 using Nekres.Musician.Core.Models;
 using Nekres.Musician.UI.Presenters;
 using System;
+using Blish_HUD.Input;
 using Nekres.Musician.Controls;
 using Nekres.Musician.UI.Models;
 
@@ -26,7 +27,7 @@ namespace Nekres.Musician.UI.Views
             this.WithPresenter(new LibraryPresenter(this, model));
         }
 
-        protected override void Build(Container buildPanel)
+        protected override async void Build(Container buildPanel)
         {
             // Sort drop down
             var ddSortMethod = new Dropdown
@@ -49,7 +50,7 @@ namespace Nekres.Musician.UI.Views
             {
                 Parent = buildPanel,
                 Location = new Point(0, ddSortMethod.Bottom + BOTTOM_MARGIN),
-                Size = new Point(buildPanel.Width, buildPanel.Height),
+                Size = new Point(buildPanel.Width, buildPanel.Height - 100),
                 FlowDirection = ControlFlowDirection.LeftToRight,
                 ControlPadding = new Vector2(5, 5),
                 CanCollapse = false,
@@ -59,7 +60,7 @@ namespace Nekres.Musician.UI.Views
                 ShowBorder = true,
             };
 
-            foreach (var (id, sheet) in MusicianModule.ModuleInstance.MusicSheetFactory.Index)
+            foreach (var sheet in await MusicianModule.ModuleInstance.MusicSheetFactory.GetAll())
             {
                 var sheetBtn = new SheetButton(sheet)
                 {
@@ -68,6 +69,15 @@ namespace Nekres.Musician.UI.Views
                 sheetBtn.OnPreviewClick += OnPreviewClick;
                 sheetBtn.OnEmulateClick += OnEmulateClick;
             }
+
+            var importBtn = new StandardButton
+            {
+                Parent = buildPanel,
+                Size = new Point(100, 32),
+                Location = new Point(MelodyFlowPanel.Right - 100, MelodyFlowPanel.Bottom + BOTTOM_MARGIN),
+                Text = "Import XML"
+            };
+            importBtn.Click += OnImportBtnClick;
         }
 
         private void OnSortChanged(object o, ValueChangedEventArgs e) => OnSelectedSortChanged?.Invoke(o, new ValueEventArgs<string>(e.CurrentValue));
@@ -76,15 +86,26 @@ namespace Nekres.Musician.UI.Views
         {
             var sheetBtn = (SheetButton)o;
             GameService.Overlay.BlishHudWindow.Hide();
-            var sheet = await MusicianModule.ModuleInstance.MusicSheetFactory.FromCache(sheetBtn.Id);
-            MusicianModule.ModuleInstance.MusicPlayer.PlayPreview(sheet);
+            var sheet = await MusicianModule.ModuleInstance.MusicSheetFactory.GetById(sheetBtn.Id);
+            await MusicianModule.ModuleInstance.MusicPlayer.PlayPreview(MusicSheet.FromModel(sheet));
         }
         private async void OnEmulateClick(object o, EventArgs e)
         {
             var sheetBtn = (SheetButton)o;
             GameService.Overlay.BlishHudWindow.Hide();
-            var sheet = await MusicianModule.ModuleInstance.MusicSheetFactory.FromCache(sheetBtn.Id);
-            MusicianModule.ModuleInstance.MusicPlayer.PlayEmulate(sheet);
+            var sheet = await MusicianModule.ModuleInstance.MusicSheetFactory.GetById(sheetBtn.Id);
+            MusicianModule.ModuleInstance.MusicPlayer.PlayEmulate(MusicSheet.FromModel(sheet));
+        }
+
+        private async void OnImportBtnClick(object o, MouseEventArgs e)
+        {
+            var xml = await ClipboardUtil.WindowsClipboardService.GetTextAsync();
+            if (!MusicSheet.TryParseXml(xml, out var sheet)) return;
+            await MusicianModule.ModuleInstance.MusicSheetFactory.AddOrUpdate(sheet);
+            var sheetBtn = new SheetButton(sheet.ToModel())
+            {
+                Parent = MelodyFlowPanel
+            };
         }
     }
 }

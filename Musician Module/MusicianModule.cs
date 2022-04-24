@@ -94,7 +94,6 @@ namespace Nekres.Musician
         protected override async Task LoadAsync()
         {
             await MusicSheetFactory.LoadAsync();
-            await MusicPlayer.LoadAsync();
         }
 
         protected override void OnModuleLoaded(EventArgs e)

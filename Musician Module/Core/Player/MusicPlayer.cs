@@ -28,11 +28,6 @@ namespace Nekres.Musician.Core.Player
             };
         }
 
-        public async Task LoadAsync()
-        {
-            foreach (var (_, soundRepo) in _soundRepositories) await soundRepo.Initialize();
-        }
-
         public void Dispose()
         {
             foreach (var (_, soundRepo) in _soundRepositories) soundRepo.Dispose();
@@ -60,7 +55,7 @@ namespace Nekres.Musician.Core.Player
             _activeSfx?.Stop();
         }
 
-        public void PlayPreview(MusicSheet musicSheet) => Play(musicSheet, GetInstrumentPreview(musicSheet.Instrument));
+        public async Task PlayPreview(MusicSheet musicSheet) => Play(musicSheet, await GetInstrumentPreview(musicSheet.Instrument));
 
         public void PlayEmulate(MusicSheet musicSheet) => Play(musicSheet, GetInstrumentEmulate(musicSheet.Instrument));
 
@@ -95,24 +90,25 @@ namespace Nekres.Musician.Core.Player
             return null;
         }
 
-        private InstrumentBase GetInstrumentPreview(Models.Instrument instrument)
+        private async Task<InstrumentBase> GetInstrumentPreview(Models.Instrument instrument)
         {
+
             switch (instrument)
             {
                 case Models.Instrument.Bass:
-                    return new BassPreview(_soundRepositories[instrument]);
+                    return new BassPreview(await _soundRepositories[instrument].Initialize());
                 case Models.Instrument.Bell:
-                    return new BellPreview(_soundRepositories[instrument]);
+                    return new BellPreview(await _soundRepositories[instrument].Initialize());
                 case Models.Instrument.Bell2:
-                    return new Bell2Preview(_soundRepositories[instrument]);
+                    return new Bell2Preview(await _soundRepositories[instrument].Initialize());
                 case Models.Instrument.Flute:
-                    return new FlutePreview(_soundRepositories[instrument]);
+                    return new FlutePreview(await _soundRepositories[instrument].Initialize());
                 case Models.Instrument.Harp:
-                    return new HarpPreview(_soundRepositories[instrument]);
+                    return new HarpPreview(await _soundRepositories[instrument].Initialize());
                 case Models.Instrument.Horn:
-                    return new HornPreview(_soundRepositories[instrument]);
+                    return new HornPreview(await _soundRepositories[instrument].Initialize());
                 case Models.Instrument.Lute:
-                    return new LutePreview(_soundRepositories[instrument]);
+                    return new LutePreview(await _soundRepositories[instrument].Initialize());
                 default: break;
             }
             return null;

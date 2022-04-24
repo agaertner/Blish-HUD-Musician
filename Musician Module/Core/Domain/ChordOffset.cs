@@ -16,10 +16,7 @@ namespace Nekres.Musician.Core.Domain
         public Chord Chord { get; }
         public Beat Offset { get; }
 
-        public string Serialize()
-        {
-            return Chord.Serialize();
-        }
+        public override string ToString() => Chord.ToString();
 
         public static IEnumerable<ChordOffset> MelodyFromString(string s)
         {

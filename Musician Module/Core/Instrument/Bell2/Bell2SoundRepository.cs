@@ -39,29 +39,94 @@ namespace Nekres.Musician.Core.Instrument
 
         public void Dispose() {
             _map?.Clear();
+            if (_sound == null) return;
             foreach (var snd in _sound)
                 snd.Value?.Dispose();
         }
 
-        public async Task Initialize()
+        public async Task<ISoundRepository> Initialize()
         {
-            await Task.Run(() => _sound = new Dictionary<string, SoundEffectInstance>
+            return await Task.Run(() =>
             {
-                {"C5", MusicianModule.ModuleInstance.ContentsManager.GetSound(@"instruments\Bell2\C5.wav").CreateInstance()},
-                {"D5", MusicianModule.ModuleInstance.ContentsManager.GetSound(@"instruments\Bell2\D5.wav").CreateInstance()},
-                {"E5", MusicianModule.ModuleInstance.ContentsManager.GetSound(@"instruments\Bell2\E5.wav").CreateInstance()},
-                {"F5", MusicianModule.ModuleInstance.ContentsManager.GetSound(@"instruments\Bell2\F5.wav").CreateInstance()},
-                {"G5", MusicianModule.ModuleInstance.ContentsManager.GetSound(@"instruments\Bell2\G5.wav").CreateInstance()},
-                {"A5", MusicianModule.ModuleInstance.ContentsManager.GetSound(@"instruments\Bell2\A5.wav").CreateInstance()},
-                {"B5", MusicianModule.ModuleInstance.ContentsManager.GetSound(@"instruments\Bell2\B5.wav").CreateInstance()},
-                {"C6", MusicianModule.ModuleInstance.ContentsManager.GetSound(@"instruments\Bell2\C6.wav").CreateInstance()},
-                {"D6", MusicianModule.ModuleInstance.ContentsManager.GetSound(@"instruments\Bell2\D6.wav").CreateInstance()},
-                {"E6", MusicianModule.ModuleInstance.ContentsManager.GetSound(@"instruments\Bell2\E6.wav").CreateInstance()},
-                {"F6", MusicianModule.ModuleInstance.ContentsManager.GetSound(@"instruments\Bell2\F6.wav").CreateInstance()},
-                {"G6", MusicianModule.ModuleInstance.ContentsManager.GetSound(@"instruments\Bell2\G6.wav").CreateInstance()},
-                {"A6", MusicianModule.ModuleInstance.ContentsManager.GetSound(@"instruments\Bell2\A6.wav").CreateInstance()},
-                {"B6", MusicianModule.ModuleInstance.ContentsManager.GetSound(@"instruments\Bell2\B6.wav").CreateInstance()},
-                {"C7", MusicianModule.ModuleInstance.ContentsManager.GetSound(@"instruments\Bell2\C7.wav").CreateInstance()}
+                _sound ??= new Dictionary<string, SoundEffectInstance>
+                {
+                    {
+                        "C5",
+                        MusicianModule.ModuleInstance.ContentsManager.GetSound(@"instruments\Bell2\C5.wav")
+                            .CreateInstance()
+                    },
+                    {
+                        "D5",
+                        MusicianModule.ModuleInstance.ContentsManager.GetSound(@"instruments\Bell2\D5.wav")
+                            .CreateInstance()
+                    },
+                    {
+                        "E5",
+                        MusicianModule.ModuleInstance.ContentsManager.GetSound(@"instruments\Bell2\E5.wav")
+                            .CreateInstance()
+                    },
+                    {
+                        "F5",
+                        MusicianModule.ModuleInstance.ContentsManager.GetSound(@"instruments\Bell2\F5.wav")
+                            .CreateInstance()
+                    },
+                    {
+                        "G5",
+                        MusicianModule.ModuleInstance.ContentsManager.GetSound(@"instruments\Bell2\G5.wav")
+                            .CreateInstance()
+                    },
+                    {
+                        "A5",
+                        MusicianModule.ModuleInstance.ContentsManager.GetSound(@"instruments\Bell2\A5.wav")
+                            .CreateInstance()
+                    },
+                    {
+                        "B5",
+                        MusicianModule.ModuleInstance.ContentsManager.GetSound(@"instruments\Bell2\B5.wav")
+                            .CreateInstance()
+                    },
+                    {
+                        "C6",
+                        MusicianModule.ModuleInstance.ContentsManager.GetSound(@"instruments\Bell2\C6.wav")
+                            .CreateInstance()
+                    },
+                    {
+                        "D6",
+                        MusicianModule.ModuleInstance.ContentsManager.GetSound(@"instruments\Bell2\D6.wav")
+                            .CreateInstance()
+                    },
+                    {
+                        "E6",
+                        MusicianModule.ModuleInstance.ContentsManager.GetSound(@"instruments\Bell2\E6.wav")
+                            .CreateInstance()
+                    },
+                    {
+                        "F6",
+                        MusicianModule.ModuleInstance.ContentsManager.GetSound(@"instruments\Bell2\F6.wav")
+                            .CreateInstance()
+                    },
+                    {
+                        "G6",
+                        MusicianModule.ModuleInstance.ContentsManager.GetSound(@"instruments\Bell2\G6.wav")
+                            .CreateInstance()
+                    },
+                    {
+                        "A6",
+                        MusicianModule.ModuleInstance.ContentsManager.GetSound(@"instruments\Bell2\A6.wav")
+                            .CreateInstance()
+                    },
+                    {
+                        "B6",
+                        MusicianModule.ModuleInstance.ContentsManager.GetSound(@"instruments\Bell2\B6.wav")
+                            .CreateInstance()
+                    },
+                    {
+                        "C7",
+                        MusicianModule.ModuleInstance.ContentsManager.GetSound(@"instruments\Bell2\C7.wav")
+                            .CreateInstance()
+                    }
+                };
+                return this;
             });
         }
     }

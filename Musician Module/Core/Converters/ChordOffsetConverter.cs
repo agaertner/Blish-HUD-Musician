@@ -16,7 +16,7 @@ namespace Nekres.Musician.Core.Domain.Converters
             foreach (var chordOffset in value)
             {
                 stringBuilder.Append(" ");
-                stringBuilder.Append(chordOffset.Serialize());
+                stringBuilder.Append(chordOffset.ToString());
             }
             writer.WriteValue(stringBuilder.ToString());
         }
