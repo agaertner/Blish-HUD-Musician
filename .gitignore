@@ -350,7 +350,3 @@ MigrationBackup/
 
 # Ionide (cross platform F# VS Code tools) working folder
 .ionide/
-
-Musician Module/SQLiteAsync.cs
-
-Musician Module/SQLite.cs
