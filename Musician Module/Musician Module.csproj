@@ -227,10 +227,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="UI\MusicSheetImporter.cs" />
     <Compile Include="SQLite.cs" />
     <Compile Include="SQLiteAsync.cs" />
+    <Compile Include="UI\Controls\ClipboardButton.cs" />
     <Compile Include="UI\Models\MusicSheetModel.cs" />
-    <Compile Include="UI\MusicSheetFactory.cs" />
+    <Compile Include="UI\MusicSheetService.cs" />
     <Compile Include="Core\Instrument\Bass\Bass.cs" />
     <Compile Include="Core\Instrument\Bass\BassNote.cs" />
     <Compile Include="Core\Instrument\Bass\BassPreview.cs" />

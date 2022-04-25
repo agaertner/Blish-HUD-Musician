@@ -1,24 +1,27 @@
-﻿using System;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading;
-using Blish_HUD;
+﻿using Blish_HUD;
 using Nekres.Musician.Core.Domain;
 using Nekres.Musician.Core.Instrument;
+using System;
+using System.Linq;
+using System.Threading;
 
 namespace Nekres.Musician.Core.Player.Algorithms
 {
     public class FavorNotesAlgorithm : PlayAlgorithmBase
     {
-        public override void Play(InstrumentBase instrument, Metronome metronomeMark, ChordOffset[] melody)
+        public FavorNotesAlgorithm(InstrumentBase instrument) : base(instrument)
         {
-            PrepareChordsOctave(instrument, melody[0].Chord);
+        }
+
+        public override void Play(Metronome metronomeMark, ChordOffset[] melody)
+        {
+            PrepareChordsOctave(melody[0].Chord);
 
             _stopwatch.Start();
 
             for (var strumIndex = 0; strumIndex < melody.Length;)
             {
-                if (_abort) return;
+                if (_abort || !CanContinue()) break;
 
                 var strum = melody[strumIndex];
 
@@ -26,11 +29,11 @@ namespace Nekres.Musician.Core.Player.Algorithms
                 {
                     var chord = strum.Chord;
 
-                    PlayChord(instrument, chord);
+                    PlayChord(chord);
 
                     if (strumIndex < melody.Length - 1)
                     {
-                        PrepareChordsOctave(instrument, melody[strumIndex + 1].Chord);
+                        PrepareChordsOctave(melody[strumIndex + 1].Chord);
                     }
 
                     strumIndex++;
@@ -44,29 +47,29 @@ namespace Nekres.Musician.Core.Player.Algorithms
             this.Dispose();
         }
 
-        private void PrepareChordsOctave(InstrumentBase instrument, Chord chord)
+        private void PrepareChordsOctave(Chord chord)
         {
-            instrument.GoToOctave(chord.Notes.First());
+            this.Instrument.GoToOctave(chord.Notes.First());
         }
 
-        private void PlayChord(InstrumentBase instrument, Chord chord)
+        private void PlayChord(Chord chord)
         {
             var notes = chord.Notes.ToArray();
 
             for (var noteIndex = 0; noteIndex < notes.Length; noteIndex++)
             {
-                instrument.PlayNote(notes[noteIndex]);
+                this.Instrument.PlayNote(notes[noteIndex]);
 
                 if (noteIndex < notes.Length - 1)
                 {
-                    PrepareNoteOctave(instrument, notes[noteIndex + 1]);
+                    PrepareNoteOctave(notes[noteIndex + 1]);
                 }
             }
         }
 
-        private void PrepareNoteOctave(InstrumentBase instrument, RealNote note)
+        private void PrepareNoteOctave(RealNote note)
         {
-            instrument.GoToOctave(note);
+            this.Instrument.GoToOctave(note);
         }
     }
 }

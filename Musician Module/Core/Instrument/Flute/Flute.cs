@@ -6,7 +6,7 @@ namespace Nekres.Musician.Core.Instrument
 {
     public class Flute : InstrumentBase
     {
-        public Flute()
+        public Flute() : base(false)
         {
             this.CurrentOctave = Octave.Low;
         }

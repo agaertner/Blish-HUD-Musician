@@ -15,6 +15,12 @@ namespace Nekres.Musician.Core.Instrument
 
         protected Octave CurrentOctave { get; set; }
 
+        public readonly bool Walkable;
+
+        protected InstrumentBase(bool walkable = true)
+        {
+            this.Walkable = walkable;
+        }
 
         protected virtual void PressKey(GuildWarsControls key)
         {

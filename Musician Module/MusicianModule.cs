@@ -41,6 +41,7 @@ namespace Nekres.Musician
         #region Settings
 
         internal SettingEntry<float> audioVolume;
+        internal SettingEntry<bool> stopWhenMoving;
         internal SettingEntry<KeyBinding> keySwapWeapons;
         internal SettingEntry<KeyBinding> keyWeaponSkill1;
         internal SettingEntry<KeyBinding> keyWeaponSkill2;
@@ -53,14 +54,18 @@ namespace Nekres.Musician
         internal SettingEntry<KeyBinding> keyUtilitySkill3;
         internal SettingEntry<KeyBinding> keyEliteSkill;
 
+        internal SettingEntry<string> SheetFilter;
         #endregion
 
         private CornerIcon _moduleIcon;
 
-        private WindowTab _moduleTab;
+        private StandardWindow _moduleWindow;
 
         internal MusicPlayer MusicPlayer { get; private set; }
-        internal MusicSheetFactory MusicSheetFactory { get; private set; }
+
+        internal MusicSheetService MusicSheetService { get; private set; }
+
+        internal MusicSheetImporter MusicSheetImporter { get; private set; }
 
         [ImportingConstructor]
         public MusicianModule([Import("ModuleParameters")] ModuleParameters moduleParameters) : base(moduleParameters) { ModuleInstance = this; }
@@ -68,7 +73,7 @@ namespace Nekres.Musician
         protected override void DefineSettings(SettingCollection settingsManager)
         {
             audioVolume = settingsManager.DefineSetting("audioVolume", 80f, () => "Audio Volume");
-
+            stopWhenMoving = settingsManager.DefineSetting("stopWhenMoving", true, () => "Stop When Moving", () => "Stops any playback when you start moving.");
             var skillKeyBindingsCollection = settingsManager.AddSubCollection("Skills", true, false);
             keySwapWeapons = skillKeyBindingsCollection.DefineSetting("keySwapWeapons", new KeyBinding(Keys.OemPipe), () => "Swap Weapons");
             keyWeaponSkill1 = skillKeyBindingsCollection.DefineSetting("keyWeaponSkill1", new KeyBinding(Keys.D1), () => "Weapon Skill 1");
@@ -81,11 +86,14 @@ namespace Nekres.Musician
             keyUtilitySkill2 = skillKeyBindingsCollection.DefineSetting("keyUtilitySkill2", new KeyBinding(Keys.D8), () => "Utility Skill 2");
             keyUtilitySkill3 = skillKeyBindingsCollection.DefineSetting("keyUtilitySkill3", new KeyBinding(Keys.D9), () => "Utility Skill 3");
             keyEliteSkill = skillKeyBindingsCollection.DefineSetting("keyEliteSkill", new KeyBinding(Keys.D0), () => "Elite Skill");
+
+            var selfManagedSettings = settingsManager.AddSubCollection("selfManaged", false, false);
+            SheetFilter = selfManagedSettings.DefineSetting("sheetFilter", "Title");
         }
 
         protected override void Initialize()
         {
-            MusicSheetFactory = new MusicSheetFactory(DirectoriesManager.GetFullDirectoryPath("musician"));
+            MusicSheetService = new MusicSheetService(DirectoriesManager.GetFullDirectoryPath("musician"));
             MusicPlayer = new MusicPlayer();
         }
 
@@ -93,24 +101,53 @@ namespace Nekres.Musician
 
         protected override async Task LoadAsync()
         {
-            await MusicSheetFactory.LoadAsync();
+            await MusicSheetService.LoadAsync();
+            this.MusicSheetImporter = new MusicSheetImporter(this.MusicSheetService, GetModuleProgressHandler());
+        }
+
+        private void UpdateModuleLoading(string loadingMessage)
+        {
+            _moduleIcon.LoadingMessage = string.IsNullOrEmpty(loadingMessage) ? string.Empty : loadingMessage;
+        }
+
+        public IProgress<string> GetModuleProgressHandler()
+        {
+            return new Progress<string>(UpdateModuleLoading);
         }
 
         protected override void OnModuleLoaded(EventArgs e)
         {
-            var icon = ContentsManager.GetTexture("musician_icon.png");
-            _moduleIcon = new CornerIcon(ContentsManager.GetTexture("musician_icon.png"), this.Name);
+            var windowRegion = new Rectangle(40, 26, 423, 780 - 56);
+            var contentRegion = new Rectangle(70, 41, 380, 780 - 42);
+            _moduleWindow = new StandardWindow(ContentsManager.GetTexture("background.png"), windowRegion, contentRegion)
+            {
+                Parent = Graphics.SpriteScreen,
+                Emblem = ContentsManager.GetTexture("musician_icon.png"),
+                Location = new Point((Graphics.SpriteScreen.Width - windowRegion.Width) / 2, (Graphics.SpriteScreen.Height - windowRegion.Height) / 2),
+                SavesPosition = true,
+                Id = Guid.NewGuid().ToString(),
+                Title = this.Name
+            };
+            _moduleIcon = new CornerIcon(ContentsManager.GetTexture("corner_icon.png"), this.Name);
+            _moduleIcon.Click += OnModuleIconClick;
 
-            _moduleTab = Overlay.BlishHudWindow.AddTab(this.Name, icon, () => new LibraryView(new LibraryModel(MusicSheetFactory)));
-
+            MusicSheetImporter.Init();
             base.OnModuleLoaded(e);
+        }
+
+        private void OnModuleIconClick(object o, MouseEventArgs e)
+        {
+            _moduleWindow.ToggleWindow(new LibraryView(new LibraryModel(MusicSheetService)));
         }
 
         protected override void Unload()
         {
-            Overlay.BlishHudWindow.RemoveTab(_moduleTab);
+            _moduleIcon.Click -= OnModuleIconClick;
             _moduleIcon?.Dispose();
+            _moduleWindow?.Dispose();
             MusicPlayer?.Dispose();
+            MusicSheetService?.Dispose();
+            MusicSheetImporter?.Dispose();
             ModuleInstance = null;
         }
     }

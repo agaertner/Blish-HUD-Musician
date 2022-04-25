@@ -7,7 +7,7 @@ namespace Nekres.Musician.Core.Instrument
 {
     public class Harp : InstrumentBase
     {
-        public Harp()
+        public Harp() : base(false)
         {
             this.CurrentOctave = Octave.Middle;
         }

@@ -6,6 +6,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Blish_HUD;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 
 namespace Nekres.Musician.Core.Player
@@ -13,6 +15,15 @@ namespace Nekres.Musician.Core.Player
     internal class MusicPlayer : IDisposable
     {
         private readonly Dictionary<Models.Instrument, ISoundRepository> _soundRepositories;
+
+        private PlayAlgorithmBase _algorithm;
+
+        private SoundEffectInstance _activeSfx;
+
+        private Guid _activeMusicSheet;
+
+        private InstrumentBase _activeInstrument;
+        private float _audioVolume => MusicianModule.ModuleInstance.audioVolume.Value / 1000;
 
         public MusicPlayer()
         {
@@ -33,11 +44,6 @@ namespace Nekres.Musician.Core.Player
             foreach (var (_, soundRepo) in _soundRepositories) soundRepo.Dispose();
         }
 
-        private PlayAlgorithmBase _algorithm;
-
-        private SoundEffectInstance _activeSfx;
-
-        private float _audioVolume => MusicianModule.ModuleInstance.audioVolume.Value / 1000;
         public void PlaySound(SoundEffectInstance sfx, bool loops = false)
         {
             if (loops)
@@ -55,16 +61,28 @@ namespace Nekres.Musician.Core.Player
             _activeSfx?.Stop();
         }
 
+        public bool IsMySongPlaying(Guid id) => _activeMusicSheet.Equals(id);
+
         public async Task PlayPreview(MusicSheet musicSheet) => Play(musicSheet, await GetInstrumentPreview(musicSheet.Instrument));
 
         public void PlayEmulate(MusicSheet musicSheet) => Play(musicSheet, GetInstrumentEmulate(musicSheet.Instrument));
 
         private void Play(MusicSheet musicSheet, InstrumentBase instrument)
         {
-            _algorithm?.Dispose();
-            _algorithm = musicSheet.Algorithm == Algorithm.FavorChords ? new FavorChordsAlgorithm() : new FavorNotesAlgorithm();
-            var worker = new Thread(() => _algorithm.Play(instrument, musicSheet.Tempo, musicSheet.Melody.ToArray()));
+            this.Stop();
+            _activeMusicSheet = musicSheet.Id;
+            _algorithm = musicSheet.Algorithm == Algorithm.FavorChords ? new FavorChordsAlgorithm(instrument) : new FavorNotesAlgorithm(instrument);
+            //TODO: Racing condition
+            var worker = new Thread(() => _algorithm?.Play(musicSheet.Tempo, musicSheet.Melody.ToArray()));
             worker.Start();
+        }
+
+        public void Stop()
+        {
+            _activeMusicSheet = Guid.Empty;
+            _activeSfx?.Stop();
+            _algorithm?.Terminate();
+            _algorithm = null;
         }
 
         private InstrumentBase GetInstrumentEmulate(Models.Instrument instrument)

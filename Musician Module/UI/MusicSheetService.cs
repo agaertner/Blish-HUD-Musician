@@ -9,51 +9,35 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Xna.Framework.Audio;
 using Nekres.Musician.UI.Models;
 using SQLite;
 
 namespace Nekres.Musician.UI
 {
-    internal class MusicSheetFactory : IDisposable
+    internal class MusicSheetService : IDisposable
     {
         public event EventHandler<ValueEventArgs<MusicSheetModel>> OnSheetUpdated;
-        public event EventHandler<ValueEventArgs<Guid>> OnSheetRemoved;
-
-        private FileSystemWatcher _xmlWatcher;
 
         public string CacheDir { get; private set; }
 
         private SQLiteAsyncConnection _db;
 
-        public MusicSheetFactory(string cacheDir)
+        private SoundEffect[] _deleteSfx;
+        public SoundEffect DeleteSfx => _deleteSfx[RandomUtil.GetRandom(0, 1)];
+        public MusicSheetService(string cacheDir)
         {
-            this.CacheDir = cacheDir;
-
-            _xmlWatcher = new FileSystemWatcher(cacheDir)
+            _deleteSfx = new []
             {
-                NotifyFilter = NotifyFilters.LastWrite | NotifyFilters.FileName,
-                Filter = "*.xml",
-                EnableRaisingEvents = true
-            };
-            _xmlWatcher.Changed += OnXmlCreated;
-        }
-
-        private async void OnXmlCreated(object sender, FileSystemEventArgs e) => await ConvertXml(e.FullPath);
-
-        private async Task ConvertXml(string filePath)
-        {
-            var musicSheet = MusicSheet.FromXml(filePath);
-            if (musicSheet == null) return;
-            await FileUtil.DeleteAsync(filePath);
-            await AddOrUpdate(musicSheet);
+                MusicianModule.ModuleInstance.ContentsManager.GetSound(@"audio\crumbling-paper-1.wav"),
+                MusicianModule.ModuleInstance.ContentsManager.GetSound(@"audio\crumbling-paper-2.wav")
+            }; 
+            this.CacheDir = cacheDir;
         }
 
         public async Task LoadAsync()
         {
             await LoadIndex();
-
-            var initialFiles = Directory.EnumerateFiles(this.CacheDir).Where(s => Path.GetExtension(s).Equals(".xml"));
-            foreach (var filePath in initialFiles) await ConvertXml(filePath);
         }
 
         private async Task LoadIndex()
@@ -63,7 +47,7 @@ namespace Nekres.Musician.UI
             await _db.CreateTableAsync<MusicSheetModel>();
         }
 
-        public async Task AddOrUpdate(MusicSheet musicSheet)
+        public async Task AddOrUpdate(MusicSheet musicSheet, bool silent = false)
         {
             
             var sheet = await _db.Table<MusicSheetModel>().FirstOrDefaultAsync(x => x.Id.Equals(musicSheet.Id));
@@ -74,22 +58,24 @@ namespace Nekres.Musician.UI
             }
             else
             {
-                await _db.UpdateAsync(musicSheet.ToModel());
+                var model = musicSheet.ToModel();
+                await _db.UpdateAsync(model);
+                OnSheetUpdated?.Invoke(this, new ValueEventArgs<MusicSheetModel>(model));
             }
 
+            if (silent) return;
+            GameService.Content.PlaySoundEffectByName("color-change");
         }
 
         public async Task Delete(Guid key)
         {
+            DeleteSfx.Play(GameService.GameIntegration.Audio.Volume, 0, 0);
             await _db.Table<MusicSheetModel>().DeleteAsync(x => x.Id.Equals(key));
         }
 
         public void Dispose()
         {
-            _xmlWatcher.Created -= OnXmlCreated;
-            _xmlWatcher.Changed -= OnXmlCreated;
-            _xmlWatcher.Dispose();
-            _db.CloseAsync();
+            foreach (var sfx in _deleteSfx) sfx?.Dispose();
         }
 
         public async Task<MusicSheetModel> GetById(Guid id)

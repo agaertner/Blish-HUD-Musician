@@ -8,10 +8,10 @@ namespace Nekres.Musician.UI.Models
         public readonly string DD_ARTIST = "Artist";
         public readonly string DD_USER = "User";
 
-        public readonly MusicSheetFactory MusicSheetFactory;
-        public LibraryModel(MusicSheetFactory sheetFactory)
+        public readonly MusicSheetService MusicSheetService;
+        public LibraryModel(MusicSheetService sheetService)
         {
-            MusicSheetFactory = sheetFactory;
+            MusicSheetService = sheetService;
         }
 
         public void Dispose()

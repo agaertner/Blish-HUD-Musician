@@ -1,27 +1,30 @@
-﻿using System;
-using System.Diagnostics.Eventing.Reader;
-using Blish_HUD;
+﻿using Blish_HUD;
 using Blish_HUD.Controls;
 using Blish_HUD.Input;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Nekres.Musician.Core.Models;
 using Nekres.Musician.UI.Models;
+using System;
 
-namespace Nekres.Musician.Controls {
+namespace Nekres.Musician.Controls
+{
     internal class SheetButton : DetailsButton
     {
         public event EventHandler<EventArgs> OnPracticeClick;
         public event EventHandler<EventArgs> OnEmulateClick;
         public event EventHandler<ValueEventArgs<bool>> OnPreviewClick;
+        public event EventHandler<ValueEventArgs<Guid>> OnDelete;
 
-        private const int SHEETBUTTON_WIDTH = 327;
+        private const int SHEETBUTTON_WIDTH = 345;
         private const int SHEETBUTTON_HEIGHT = 100;
         private const int USER_WIDTH = 75;
         private const int BOTTOMSECTION_HEIGHT = 35;
 
         #region Textures
 
+        private static Texture2D _trashCanClosed = MusicianModule.ModuleInstance.ContentsManager.GetTexture("trashcanClosed_icon_64x64.png");
+        private static Texture2D _trashCanOpen = MusicianModule.ModuleInstance.ContentsManager.GetTexture("trashcanOpen_icon_64x64.png");
         private static Texture2D _beatManiaSprite = MusicianModule.ModuleInstance.ContentsManager.GetTexture("beatmania.png");
         private static Texture2D _glowBeatManiaSprite = MusicianModule.ModuleInstance.ContentsManager.GetTexture("glow_beatmania.png");
         private static Texture2D _autoplaySprite = MusicianModule.ModuleInstance.ContentsManager.GetTexture("autoplay.png");
@@ -50,6 +53,13 @@ namespace Nekres.Musician.Controls {
             set => SetProperty(ref _user, value);
         }
 
+        private Instrument _instrument;
+        public Instrument Instrument
+        {
+            get => _instrument;
+            set => SetProperty(ref _instrument, value);
+        }
+
         private bool _isPreviewing;
 
         private Rectangle _practiceButtonBounds;
@@ -58,6 +68,8 @@ namespace Nekres.Musician.Controls {
         private bool _mouseOverEmulate;
         private Rectangle _previewButtonBounds;
         private bool _mouseOverPreview;
+        private Rectangle _deleteButtonBounds;
+        private bool _mouseOverDelete;
 
         public SheetButton(MusicSheetModel sheet)
         {
@@ -66,55 +78,76 @@ namespace Nekres.Musician.Controls {
             User = sheet.User;
             Title = sheet.Title;
             Icon = sheet.Instrument.GetIcon();
+            Instrument = sheet.Instrument;
             Size = new Point(SHEETBUTTON_WIDTH, SHEETBUTTON_HEIGHT);
-        }
-
-        protected override void OnMouseLeft(MouseEventArgs e)
-        {
-            _mouseOverPractice = false;
-            _mouseOverEmulate = false;
-            base.OnMouseLeft(e);
         }
 
         protected override void OnMouseMoved(MouseEventArgs e)
         {
-            var relPos = RelativeMousePosition;
-            _mouseOverPractice = _practiceButtonBounds.Contains(relPos);
-            _mouseOverEmulate = _emulateButtonBounds.Contains(relPos);
-            _mouseOverPreview = _previewButtonBounds.Contains(relPos);
-
-            if (_mouseOverPractice)
-                BasicTooltipText = "Practice mode (Synthesia)";
-            else if (_mouseOverEmulate)
-                BasicTooltipText = "Emulate keys (Autoplay)";
-            else if (_mouseOverPreview)
-                BasicTooltipText = "Preview";
-            else
-                BasicTooltipText = Title;
+            this.InvalidateMousePosition();
             base.OnMouseMoved(e);
         }
 
-        protected override void OnLeftMouseButtonReleased(MouseEventArgs e)
+        protected override void OnClick(MouseEventArgs e)
         {
+            base.OnClick(e);
             if (_mouseOverPractice)
+            {
                 OnPracticeClick?.Invoke(this, EventArgs.Empty);
+                GameService.Content.PlaySoundEffectByName("error");
+                ScreenNotification.ShowNotification("Not yet implemented!");
+            }
             else if (_mouseOverEmulate)
+            {
                 OnEmulateClick?.Invoke(this, EventArgs.Empty);
+                GameService.Content.PlaySoundEffectByName("button-click");
+            }
             else if (_mouseOverPreview)
             {
-                _isPreviewing = !_isPreviewing;
-                OnPreviewClick?.Invoke(this, new ValueEventArgs<bool>(_isPreviewing));
-            }
+                OnPreviewClick?.Invoke(this, new ValueEventArgs<bool>(!MusicianModule.ModuleInstance.MusicPlayer.IsMySongPlaying(this.Id)));
+                GameService.Content.PlaySoundEffectByName("button-click");
+            } else if (_mouseOverDelete) 
+                this.Dispose();
+        }
 
-            base.OnLeftMouseButtonReleased(e);
+        protected override void DisposeControl()
+        {
+            OnDelete?.Invoke(this, new ValueEventArgs<Guid>(this.Id));
+            base.DisposeControl();
         }
 
         protected override CaptureType CapturesInput() {
             return CaptureType.Mouse | CaptureType.Filter;
         }
 
+        protected override void OnMoved(MovedEventArgs e)
+        {
+            this.InvalidateMousePosition();
+            base.OnMoved(e);
+        }
+
+        private void InvalidateMousePosition()
+        {
+            var relPos = RelativeMousePosition;
+            _mouseOverPractice = _practiceButtonBounds.Contains(relPos);
+            _mouseOverEmulate = _emulateButtonBounds.Contains(relPos);
+            _mouseOverPreview = _previewButtonBounds.Contains(relPos);
+            _mouseOverDelete = _deleteButtonBounds.Contains(relPos);
+
+            if (_mouseOverPractice)
+                this.Parent.BasicTooltipText = "Practice mode (Synthesia)";
+            else if (_mouseOverEmulate)
+                this.Parent.BasicTooltipText = "Emulate keys (Autoplay)";
+            else if (_mouseOverPreview)
+                this.Parent.BasicTooltipText = "Preview";
+            else
+                this.Parent.BasicTooltipText = string.Empty;
+        }
+
         public override void PaintBeforeChildren(SpriteBatch spriteBatch, Rectangle bounds)
         {
+            _isPreviewing = MusicianModule.ModuleInstance.MusicPlayer.IsMySongPlaying(this.Id);
+
             var iconSize = IconSize == DetailsIconSize.Large ? SHEETBUTTON_HEIGHT : SHEETBUTTON_HEIGHT - BOTTOMSECTION_HEIGHT;
 
             // Draw background
@@ -125,43 +158,42 @@ namespace Nekres.Musician.Controls {
 
             // Draw preview icon
             _previewButtonBounds = new Rectangle(SHEETBUTTON_WIDTH - 36, bounds.Height - BOTTOMSECTION_HEIGHT + 1, 32, 32);
-            if (_mouseOverPreview)
-            {
-                if (_isPreviewing)
-                    spriteBatch.DrawOnCtrl(this, _glowStopSprite, _previewButtonBounds, Color.White);
-                else
-                    spriteBatch.DrawOnCtrl(this, _glowPlaySprite, _previewButtonBounds, Color.White);
-            }
+            if (_isPreviewing)
+                spriteBatch.DrawOnCtrl(this, _playSprite, _previewButtonBounds, Color.White);
             else
-            {
-                if (_isPreviewing)
-                    spriteBatch.DrawOnCtrl(this, _stopSprite, new Rectangle(SHEETBUTTON_WIDTH - 36, bounds.Height - BOTTOMSECTION_HEIGHT + 1, 32, 32), Color.White);
-                else
-                    spriteBatch.DrawOnCtrl(this, _playSprite, new Rectangle(SHEETBUTTON_WIDTH - 36, bounds.Height - BOTTOMSECTION_HEIGHT + 1, 32, 32), Color.White);
-            }
+                spriteBatch.DrawOnCtrl(this, _stopSprite, _previewButtonBounds, Color.White);
 
-            // Draw play button
-            _practiceButtonBounds = new Rectangle(SHEETBUTTON_WIDTH - 73, bounds.Height - BOTTOMSECTION_HEIGHT + 1, 32, 32);
+
+            // Draw practice button
+            _practiceButtonBounds = new Rectangle(_previewButtonBounds.Left - LEFT_PADDING - 32, bounds.Height - BOTTOMSECTION_HEIGHT + 1, 32, 32);
             if (_mouseOverPractice)
                 spriteBatch.DrawOnCtrl(this, _glowBeatManiaSprite, _practiceButtonBounds, Color.White);
             else
                 spriteBatch.DrawOnCtrl(this, _beatManiaSprite, _practiceButtonBounds, Color.White);
 
             // Draw emulate button
-            _emulateButtonBounds = new Rectangle(SHEETBUTTON_WIDTH - 109, bounds.Height - BOTTOMSECTION_HEIGHT + 1, 32, 32);
+            _emulateButtonBounds = new Rectangle(_practiceButtonBounds.Left - LEFT_PADDING - 32, bounds.Height - BOTTOMSECTION_HEIGHT + 1, 32, 32);
             if (_mouseOverEmulate)
                 spriteBatch.DrawOnCtrl(this, _glowAutoplaySprite, _emulateButtonBounds, Color.White);
             else
                 spriteBatch.DrawOnCtrl(this, _autoplaySprite, _emulateButtonBounds, Color.White);
-            
+
+            _deleteButtonBounds = new Rectangle(_emulateButtonBounds.Left - LEFT_PADDING - 32, bounds.Height - BOTTOMSECTION_HEIGHT + 1, 32, 32);
+            if (_mouseOverDelete)
+                spriteBatch.DrawOnCtrl(this, _trashCanOpen, _deleteButtonBounds, Color.White);
+            else
+                spriteBatch.DrawOnCtrl(this, _trashCanClosed, _deleteButtonBounds, Color.White);
+
             // Draw bottom section separator
             spriteBatch.DrawOnCtrl(this, _dividerSprite, new Rectangle(0, bounds.Height - 40, bounds.Width, 8), Color.White);
 
             // Draw instrument icon
-            if (Icon != null) {
-                spriteBatch.DrawOnCtrl(this, this.Icon, new Rectangle((bounds.Height - BOTTOMSECTION_HEIGHT) / 2 - 32, (bounds.Height - 35) / 2 - 32, 64, 64), Color.White);
+            if (Icon != null)
+            {
+                var iconBounds = new Rectangle((bounds.Height - BOTTOMSECTION_HEIGHT) / 2 - 32, (bounds.Height - 35) / 2 - 32, 64, 64);
+                spriteBatch.DrawOnCtrl(this, this.Icon, iconBounds, Color.White);
                 // Draw icon box
-                spriteBatch.DrawOnCtrl(this, _iconBoxSprite, new Rectangle(0, 0, iconSize, iconSize), Color.White);
+                spriteBatch.DrawOnCtrl(this, _iconBoxSprite, iconBounds, Color.White);
             }
 
             // Wrap text

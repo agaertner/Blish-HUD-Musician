@@ -65,13 +65,10 @@ namespace Nekres.Musician.Core.Domain
             switch (Octave)
             {
                 case Octave.Lowest:
-                    result += ",,,";
-                    break;
-                case Octave.Lower:
-                    result += ",,";
+                    result += ",";
                     break;
                 case Octave.Low:
-                    result += ",";
+                    result += ",,";
                     break;
                 case Octave.Middle:
                     result = result.ToLowerInvariant();
@@ -79,11 +76,8 @@ namespace Nekres.Musician.Core.Domain
                 case Octave.High:
                     result = $"{result.ToLowerInvariant()}'";
                     break;
-                case Octave.Higher:
-                    result = $"{result.ToLowerInvariant()}''";
-                    break;
                 case Octave.Highest:
-                    result = $"{result.ToLowerInvariant()}'''";
+                    result = $"{result.ToLowerInvariant()}''";
                     break;
                 default: break;
             }
@@ -106,7 +100,7 @@ namespace Nekres.Musician.Core.Domain
 
             if (text.Length == 1)
             {
-                octave = Octave.Middle;
+                octave = char.IsUpper(char.Parse(text)) ? Octave.Low : Octave.Middle;
                 return true;
             }
 
@@ -117,17 +111,16 @@ namespace Nekres.Musician.Core.Domain
                 case ',':
                     switch (octaveMarks.Length)
                     {
-                        case 3: octave = Octave.Lowest; break;
-                        case 2: octave = Octave.Lower; break;
-                        case 1: octave = Octave.Low; break;
+                        case 1: octave = Octave.Lowest; break;
+                        case 2: octave = Octave.Low; break;
+                        case 3: octave = Octave.Middle; break;
                     }
                     return true;
                 case '\'':
                     switch (octaveMarks.Length)
                     {
-                        case 3: octave = Octave.Highest; break;
-                        case 2: octave = Octave.Higher; break;
                         case 1: octave = Octave.High; break;
+                        case 2: octave = Octave.Highest; break;
                     }
                     return true;
                 default:

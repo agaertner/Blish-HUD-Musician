@@ -143,10 +143,16 @@ namespace Nekres.Musician.Core.Models
                 {
                     return FromXml(XDocument.Load(path));
                 }
-                catch (Exception e) when (e is IOException or UnauthorizedAccessException or XmlException)
+                catch (Exception e) when (e is IOException or UnauthorizedAccessException)
                 {
-                    if (DateTime.UtcNow < timeout && e.GetType() != typeof(XmlException)) continue;
+                    if (DateTime.UtcNow < timeout) continue;
                     MusicianModule.Logger.Warn(e, e.Message);
+                    break;
+                }
+                catch (Exception e) when (e is XmlException or FormatException)
+                {
+                    MusicianModule.Logger.Warn(e, e.Message);
+                    break;
                 }
             }
             return null;
@@ -155,6 +161,7 @@ namespace Nekres.Musician.Core.Models
         public static bool TryParseXml(string xml, out MusicSheet sheet)
         {
             sheet = null;
+            if (string.IsNullOrEmpty(xml)) return false;
             try
             {
                 sheet = FromXml(XDocument.Parse(xml));

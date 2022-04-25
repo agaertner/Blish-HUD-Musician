@@ -15,12 +15,17 @@ namespace Nekres.Musician.Core.Domain
             BeatsPerMeasure = beatsPerMeasure;
             Tempo = tempo;
 
-            QuaterNoteLength = TimeSpan.FromMinutes(1)
-                .Divide(tempo*16/beatsPerMeasure.Denominator);
+            var divisor = beatsPerMeasure.Denominator != 0 ? tempo * 16 / beatsPerMeasure.Denominator : tempo * 16;
 
-            WholeNoteLength = TimeSpan.FromMinutes(1)
-                .Divide(tempo*16/beatsPerMeasure.Denominator)
-                .Multiply(4);
+            QuaterNoteLength = TimeSpan.FromMinutes(1);
+
+            if (divisor != 0) QuaterNoteLength = QuaterNoteLength.Divide(divisor);
+
+            WholeNoteLength = TimeSpan.FromMinutes(1);
+
+            if (divisor != 0) WholeNoteLength = WholeNoteLength.Divide(divisor);
+
+            WholeNoteLength = WholeNoteLength.Multiply(4);
         }
 
         public override string ToString() => $"{Tempo} {BeatsPerMeasure}";
