@@ -1,4 +1,5 @@
-﻿using Nekres.Musician.Core.Instrument;
+﻿using Microsoft.Xna.Framework.Audio;
+using Nekres.Musician.Core.Instrument;
 using Nekres.Musician.Core.Models;
 using Nekres.Musician.Core.Player.Algorithms;
 using System;
@@ -6,9 +7,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Blish_HUD;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Audio;
 
 namespace Nekres.Musician.Core.Player
 {
@@ -22,7 +20,6 @@ namespace Nekres.Musician.Core.Player
 
         private Guid _activeMusicSheet;
 
-        private InstrumentBase _activeInstrument;
         private float _audioVolume => MusicianModule.ModuleInstance.audioVolume.Value / 1000;
 
         public MusicPlayer()
@@ -70,18 +67,17 @@ namespace Nekres.Musician.Core.Player
         private void Play(MusicSheet musicSheet, InstrumentBase instrument)
         {
             this.Stop();
-            _activeMusicSheet = musicSheet.Id;
             _algorithm = musicSheet.Algorithm == Algorithm.FavorChords ? new FavorChordsAlgorithm(instrument) : new FavorNotesAlgorithm(instrument);
-            //TODO: Racing condition
             var worker = new Thread(() => _algorithm?.Play(musicSheet.Tempo, musicSheet.Melody.ToArray()));
             worker.Start();
+            _activeMusicSheet = musicSheet.Id;
         }
 
         public void Stop()
         {
+            this.StopSound();
             _activeMusicSheet = Guid.Empty;
-            _activeSfx?.Stop();
-            _algorithm?.Terminate();
+            _algorithm?.Dispose();
             _algorithm = null;
         }
 

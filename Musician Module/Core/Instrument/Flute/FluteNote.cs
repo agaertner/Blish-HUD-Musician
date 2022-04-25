@@ -1,7 +1,6 @@
-﻿using System.Collections.Generic;
-using System.Runtime.CompilerServices;
-using Blish_HUD.Controls.Intern;
+﻿using Blish_HUD.Controls.Intern;
 using Nekres.Musician.Core.Domain;
+using System.Collections.Generic;
 
 namespace Nekres.Musician.Core.Instrument
 {

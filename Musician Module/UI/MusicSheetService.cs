@@ -1,17 +1,12 @@
 ﻿using Blish_HUD;
-using Blish_HUD.Controls;
-using Nekres.Musician.Core.Models;
-using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Data.Common;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.Xna.Framework.Audio;
+using Nekres.Musician.Core.Models;
 using Nekres.Musician.UI.Models;
 using SQLite;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Threading.Tasks;
 
 namespace Nekres.Musician.UI
 {
@@ -37,12 +32,12 @@ namespace Nekres.Musician.UI
 
         public async Task LoadAsync()
         {
-            await LoadIndex();
+            await LoadDatabase();
         }
 
-        private async Task LoadIndex()
+        private async Task LoadDatabase()
         {
-            var filePath = Path.Combine(this.CacheDir, "index.sqlite");
+            var filePath = Path.Combine(this.CacheDir, "db.sqlite");
             _db = new SQLiteAsyncConnection(filePath);
             await _db.CreateTableAsync<MusicSheetModel>();
         }

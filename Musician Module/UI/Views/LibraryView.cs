@@ -1,14 +1,16 @@
 ﻿using Blish_HUD;
 using Blish_HUD.Controls;
 using Blish_HUD.Graphics.UI;
-using Microsoft.Xna.Framework;
-using Nekres.Musician.Core.Models;
-using Nekres.Musician.UI.Presenters;
-using System;
 using Blish_HUD.Input;
+using Microsoft.Xna.Framework;
 using Nekres.Musician.Controls;
+using Nekres.Musician.Core.Models;
 using Nekres.Musician.UI.Controls;
 using Nekres.Musician.UI.Models;
+using Nekres.Musician.UI.Presenters;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Nekres.Musician.UI.Views
 {
@@ -25,10 +27,22 @@ namespace Nekres.Musician.UI.Views
         public FlowPanel MelodyFlowPanel { get; private set; }
 
         private string _activeFilter;
+
+        private IEnumerable<MusicSheetModel> _initialSheets;
         public LibraryView(LibraryModel model)
         {
             this.WithPresenter(new LibraryPresenter(this, model));
             _activeFilter = MusicianModule.ModuleInstance.SheetFilter.Value;
+        }
+
+        protected override async Task<bool> Load(IProgress<string> progress)
+        {
+            return await Task.Run(async () =>
+            {
+                progress.Report(MusicianModule.ModuleInstance.MusicSheetImporter.Log);
+                _initialSheets = await MusicianModule.ModuleInstance.MusicSheetService.GetAll();
+                return !MusicianModule.ModuleInstance.MusicSheetImporter.IsLoading;
+            });
         }
 
         protected override void Unload()
@@ -78,7 +92,7 @@ namespace Nekres.Musician.UI.Views
                 ShowBorder = true,
             };
 
-            foreach (var sheet in await MusicianModule.ModuleInstance.MusicSheetService.GetAll()) this.CreateSheetButton(sheet);
+            foreach (var sheet in _initialSheets) this.CreateSheetButton(sheet);
 
             var importBtn = new ClipboardButton
             {

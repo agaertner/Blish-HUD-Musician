@@ -18,13 +18,11 @@ namespace Nekres.Musician.Core.Domain
     public enum Octave
     {
 
-        Lowest, // C,,,
-        Lower,  // C,,
-        Low,    // C,
+        Lowest,
+        Low,
         Middle,
-        High,   // c'
-        Higher, // c''
-        Highest // c'''
+        High,
+        Highest
     }
 
     public class RealNote

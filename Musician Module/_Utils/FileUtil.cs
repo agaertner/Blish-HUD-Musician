@@ -45,17 +45,14 @@ namespace Nekres.Musician
                         if (sendToRecycleBin)
                             FileSystem.DeleteFile(filePath, UIOption.OnlyErrorDialogs, RecycleOption.SendToRecycleBin, UICancelOption.DoNothing);
                         else
-                        {
                             File.Delete(filePath);
-                            GC.Collect();
-                        }
-
                         return true;
                     }
                     catch (Exception e) when (e is IOException or UnauthorizedAccessException or SecurityException)
                     {
                         if (DateTime.UtcNow < timeout) continue;
                         Logger.Error(e, e.Message);
+                        break;
                     }
                 }
                 return false;

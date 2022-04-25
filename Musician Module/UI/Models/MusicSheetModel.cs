@@ -23,7 +23,7 @@ namespace Nekres.Musician.UI.Models
 
         public Algorithm Algorithm { get; set; }
 
-        [MaxLength(500)]
+        [MaxLength(1000)]
         public string Melody { get; set; }
     }
 }

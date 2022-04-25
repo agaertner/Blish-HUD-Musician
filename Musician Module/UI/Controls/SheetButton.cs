@@ -178,6 +178,7 @@ namespace Nekres.Musician.Controls
             else
                 spriteBatch.DrawOnCtrl(this, _autoplaySprite, _emulateButtonBounds, Color.White);
 
+            // Draw delete button
             _deleteButtonBounds = new Rectangle(_emulateButtonBounds.Left - LEFT_PADDING - 32, bounds.Height - BOTTOMSECTION_HEIGHT + 1, 32, 32);
             if (_mouseOverDelete)
                 spriteBatch.DrawOnCtrl(this, _trashCanOpen, _deleteButtonBounds, Color.White);
@@ -197,8 +198,8 @@ namespace Nekres.Musician.Controls
             }
 
             // Wrap text
-            string track = Title + @" - " + Artist;
-            string wrappedText = DrawUtil.WrapText(Content.DefaultFont14, track, SHEETBUTTON_WIDTH - 40 - iconSize - 20);
+            var track = Title + " - " + Artist;
+            var wrappedText = DrawUtil.WrapText(Content.DefaultFont14, track, SHEETBUTTON_WIDTH - 40 - iconSize - 20);
             spriteBatch.DrawStringOnCtrl(this, wrappedText, Content.DefaultFont14, new Rectangle(89, 0, 216, this.Height - BOTTOMSECTION_HEIGHT), Color.White, false, true, 2, HorizontalAlignment.Left, VerticalAlignment.Middle);
 
             // Draw the user;

@@ -29,13 +29,6 @@ namespace Nekres.Musician.Core.Player.Algorithms
         {
             _abort = true;
             _stopwatch.Stop();
-            MusicianModule.ModuleInstance.MusicPlayer?.Stop();
-        }
-
-        public void Terminate()
-        {
-            if (_abort) return;
-            this.Dispose();
         }
 
         protected bool CharacterMoved()
@@ -45,10 +38,9 @@ namespace Nekres.Musician.Core.Player.Algorithms
 
         protected bool CanContinue()
         {
-            return GameService.GameIntegration.Gw2Instance.Gw2HasFocus
-                   && GameService.Gw2Mumble.IsAvailable
-                   && !GameService.Gw2Mumble.UI.IsTextInputFocused 
-                   && (!CharacterMoved() || Instrument.Walkable);
+            return GameService.Gw2Mumble.IsAvailable
+                   && !GameService.Gw2Mumble.UI.IsTextInputFocused
+                   && !CharacterMoved();
         }
     }
 }

@@ -18,6 +18,8 @@ namespace Nekres.Musician
 
         public bool IsLoading { get; private set; }
 
+        public string Log { get; private set; }
+
         public MusicSheetImporter(MusicSheetService sheetService, IProgress<string> loadingIndicator)
         {
             _sheetService = sheetService;
@@ -49,7 +51,8 @@ namespace Nekres.Musician
             var initialFiles = Directory.EnumerateFiles(_sheetService.CacheDir).Where(s => Path.GetExtension(s).Equals(".xml"));
             foreach (var filePath in initialFiles) await ConvertXml(filePath, true);
             this.IsLoading = false;
-            _loadingIndicator.Report(string.Empty);
+            this.Log = null;
+            _loadingIndicator.Report(null);
         }
 
         private async Task ConvertXml(string filePath, bool silent = false)
@@ -57,6 +60,7 @@ namespace Nekres.Musician
             var log = $"Importing {Path.GetFileName(filePath)}..";
             System.Diagnostics.Debug.WriteLine(log);
             MusicianModule.Logger.Info(log);
+            this.Log = log;
             _loadingIndicator.Report(log);
             var musicSheet = MusicSheet.FromXml(filePath);
             if (musicSheet == null) return;

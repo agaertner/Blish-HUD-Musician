@@ -1,5 +1,4 @@
-﻿using System;
-using Blish_HUD.Controls.Intern;
+﻿using Blish_HUD.Controls.Intern;
 using Nekres.Musician.Core.Domain;
 using static Blish_HUD.Controls.Intern.GuildWarsControls;
 namespace Nekres.Musician.Core.Instrument

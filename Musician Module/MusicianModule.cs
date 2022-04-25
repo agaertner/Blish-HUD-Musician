@@ -1,23 +1,19 @@
 ﻿using Blish_HUD;
 using Blish_HUD.Controls;
+using Blish_HUD.Graphics.UI;
 using Blish_HUD.Input;
 using Blish_HUD.Modules;
 using Blish_HUD.Modules.Managers;
 using Blish_HUD.Settings;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using Nekres.Musician.Controls;
-using Nekres.Musician.Core.Instrument;
 using Nekres.Musician.Core.Player;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.Composition;
-using System.Threading.Tasks;
-using Blish_HUD.Graphics.UI;
 using Nekres.Musician.UI;
 using Nekres.Musician.UI.Models;
 using Nekres.Musician.UI.Views;
+using System;
+using System.ComponentModel.Composition;
+using System.Threading.Tasks;
 using static Blish_HUD.GameService;
 
 namespace Nekres.Musician
@@ -89,10 +85,18 @@ namespace Nekres.Musician
 
             var selfManagedSettings = settingsManager.AddSubCollection("selfManaged", false, false);
             SheetFilter = selfManagedSettings.DefineSetting("sheetFilter", "Title");
+            GameIntegration.Gw2Instance.IsInGameChanged += OnIsInGameChanged;
+        }
+
+        private void OnIsInGameChanged(object o, ValueEventArgs<bool> e)
+        {
+            _moduleIcon.Visible = e.Value;
+            if (!e.Value) _moduleWindow.Hide();
         }
 
         protected override void Initialize()
         {
+            _moduleIcon = new CornerIcon(ContentsManager.GetTexture("corner_icon.png"), this.Name);
             MusicSheetService = new MusicSheetService(DirectoriesManager.GetFullDirectoryPath("musician"));
             MusicPlayer = new MusicPlayer();
         }
@@ -107,7 +111,7 @@ namespace Nekres.Musician
 
         private void UpdateModuleLoading(string loadingMessage)
         {
-            _moduleIcon.LoadingMessage = string.IsNullOrEmpty(loadingMessage) ? string.Empty : loadingMessage;
+            _moduleIcon.LoadingMessage = loadingMessage;
         }
 
         public IProgress<string> GetModuleProgressHandler()
@@ -128,7 +132,7 @@ namespace Nekres.Musician
                 Id = Guid.NewGuid().ToString(),
                 Title = this.Name
             };
-            _moduleIcon = new CornerIcon(ContentsManager.GetTexture("corner_icon.png"), this.Name);
+
             _moduleIcon.Click += OnModuleIconClick;
 
             MusicSheetImporter.Init();
@@ -142,6 +146,7 @@ namespace Nekres.Musician
 
         protected override void Unload()
         {
+            GameIntegration.Gw2Instance.IsInGameChanged -= OnIsInGameChanged;
             _moduleIcon.Click -= OnModuleIconClick;
             _moduleIcon?.Dispose();
             _moduleWindow?.Dispose();

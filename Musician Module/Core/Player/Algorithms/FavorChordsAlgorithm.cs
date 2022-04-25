@@ -41,7 +41,7 @@ namespace Nekres.Musician.Core.Player.Algorithms
                 }
             }
 
-            this.Dispose();
+            MusicianModule.ModuleInstance.MusicPlayer?.Stop();
         }
     }
 }

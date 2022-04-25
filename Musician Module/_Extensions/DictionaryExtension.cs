@@ -12,7 +12,7 @@ namespace Nekres.Musician
             (
                 input.Select
                 ( 
-                    async pair => new { Key = pair.Key, Value = await pair.Value }
+                    async pair => new {pair.Key, Value = await pair.Value }
                 )
             );
             return pairs.ToDictionary(pair => pair.Key, pair => pair.Value);
