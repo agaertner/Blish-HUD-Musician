@@ -1,5 +1,5 @@
 ﻿using Blish_HUD;
-using LiteDB;
+using LiteDB.Async;
 using Microsoft.Xna.Framework.Audio;
 using Nekres.Musician.Core.Models;
 using Nekres.Musician.UI.Models;
@@ -7,7 +7,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
-using LiteDB.Async;
 
 namespace Nekres.Musician.UI
 {
@@ -43,22 +42,13 @@ namespace Nekres.Musician.UI
             var filePath = Path.Combine(this.CacheDir, "data.db");
             _db = new LiteDatabaseAsync(filePath);
             _ctx = _db.GetCollection<MusicSheetModel>("music_sheets");
-            BsonMapper.Global.Entity<MusicSheetModel>()
-                .Id(x => x.InternalId)
-                .Field(x => x.Id, "id")
-                .Field(x => x.User, "user")
-                .Field(x => x.Title, "title")
-                .Field(x => x.Artist, "artist")
-                .Field(x => x.Instrument, "instrument")
-                .Field(x => x.Algorithm, "algorithm")
-                .Field(x => x.Tempo, "tempo")
-                .Field(x => x.Melody, "melody");
         }
 
         public async Task AddOrUpdate(MusicSheet musicSheet, bool silent = false)
         {
             var model = musicSheet.ToModel();
             await _ctx.UpsertAsync(model);
+            await _ctx.EnsureIndexAsync(x => x.Id);
             OnSheetUpdated?.Invoke(this, new ValueEventArgs<MusicSheetModel>(model));
 
             if (silent) return;

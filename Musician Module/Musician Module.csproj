@@ -297,7 +297,6 @@
     <Compile Include="UI\Views\CustomSettingsView.cs" />
     <Compile Include="UI\Views\LibraryView.cs" />
     <Compile Include="_Extensions\DictionaryExtension.cs" />
-    <Compile Include="_Extensions\InstrumentExtensions.cs" />
     <Compile Include="_Extensions\KeyValuePairExtensions.cs" />
     <Compile Include="_Utils\BrowserUtil.cs" />
     <Compile Include="_Utils\FileUtil.cs" />
