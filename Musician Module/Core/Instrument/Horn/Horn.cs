@@ -6,9 +6,8 @@ namespace Nekres.Musician.Core.Instrument
 {
     public class Horn : InstrumentBase
     {
-        public Horn() : base(false)
+        public Horn() : base(Octave.Low, false)
         {
-            this.CurrentOctave = Octave.Low;
         }
 
         protected override NoteBase ConvertNote(RealNote note) => HornNote.From(note);
@@ -64,9 +63,6 @@ namespace Nekres.Musician.Core.Instrument
             PressKey(UtilitySkill3);
 
             Thread.Sleep(OctaveTimeout);
-        }
-
-        public override void Dispose() {
         }
     }
 }

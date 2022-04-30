@@ -41,7 +41,6 @@ namespace Nekres.Musician
         #region Settings
 
         internal SettingEntry<float> audioVolume;
-        internal SettingEntry<bool> stopWhenMoving;
         internal SettingEntry<KeyBinding> keySwapWeapons;
         internal SettingEntry<KeyBinding> keyWeaponSkill1;
         internal SettingEntry<KeyBinding> keyWeaponSkill2;
@@ -77,7 +76,6 @@ namespace Nekres.Musician
         protected override void DefineSettings(SettingCollection settingsManager)
         {
             audioVolume = settingsManager.DefineSetting("audioVolume", 80f, () => "Audio Volume");
-            stopWhenMoving = settingsManager.DefineSetting("stopWhenMoving", true, () => "Stop When Moving", () => "Stops any playback when you start moving.");
             var skillKeyBindingsCollection = settingsManager.AddSubCollection("Skills", true, false);
             keySwapWeapons = skillKeyBindingsCollection.DefineSetting("keySwapWeapons", new KeyBinding(Keys.OemPipe), () => "Swap Weapons");
             keyWeaponSkill1 = skillKeyBindingsCollection.DefineSetting("keyWeaponSkill1", new KeyBinding(Keys.D1), () => "Weapon Skill 1");

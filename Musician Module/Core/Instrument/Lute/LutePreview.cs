@@ -8,9 +8,8 @@ namespace Nekres.Musician.Core.Instrument
     {
         private readonly ISoundRepository _soundRepository;
 
-        public LutePreview(ISoundRepository soundRepo)
+        public LutePreview(ISoundRepository soundRepo) : base(Octave.Middle, true)
         {
-            this.CurrentOctave = Octave.Middle;
             _soundRepository = soundRepo;
         }
 
@@ -83,9 +82,6 @@ namespace Nekres.Musician.Core.Instrument
                     break;
                 default: break;
             }
-        }
-
-        public override void Dispose() {
         }
     }
 }

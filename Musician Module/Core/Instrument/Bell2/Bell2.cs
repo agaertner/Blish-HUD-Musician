@@ -7,9 +7,8 @@ namespace Nekres.Musician.Core.Instrument
 {
     public class Bell2 : InstrumentBase
     {
-        public Bell2()
+        public Bell2() : base(Octave.Low, true)
         {
-            this.CurrentOctave = Octave.Low;
         }
 
         protected override NoteBase OptimizeNote(NoteBase note)
@@ -56,9 +55,6 @@ namespace Nekres.Musician.Core.Instrument
             PressKey(UtilitySkill3);
 
             Thread.Sleep(OctaveTimeout);
-        }
-
-        public override void Dispose() {
         }
     }
 }

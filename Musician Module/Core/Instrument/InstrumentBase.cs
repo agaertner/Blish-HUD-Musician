@@ -8,18 +8,31 @@ using Keyboard = Blish_HUD.Controls.Intern.Keyboard;
 
 namespace Nekres.Musician.Core.Instrument
 {
-    public abstract class InstrumentBase : IDisposable
+    public abstract class InstrumentBase
     {
         protected readonly TimeSpan NoteTimeout = TimeSpan.FromMilliseconds(5);
         protected readonly TimeSpan OctaveTimeout = TimeSpan.FromTicks(500);
 
+        /// <summary>
+        /// The current octave.
+        /// </summary>
         protected Octave CurrentOctave { get; set; }
 
+        /// <summary>
+        /// The default octave of the instrument.
+        /// </summary>
+        public readonly Octave DefaultOctave;
+
+        /// <summary>
+        /// <seealso langword="True"/> if instrument does not root the player; Otherwise <seealso langword="false"/>.
+        /// </summary>
         public readonly bool Walkable;
 
-        protected InstrumentBase(bool walkable = true)
+        protected InstrumentBase(Octave defaultOctave, bool walkable)
         {
             this.Walkable = walkable;
+            this.DefaultOctave = defaultOctave;
+            this.CurrentOctave = defaultOctave;
         }
 
         protected virtual void PressKey(GuildWarsControls key)
@@ -53,9 +66,14 @@ namespace Nekres.Musician.Core.Instrument
 
             note = OptimizeNote(note);
 
-            while (CurrentOctave != note.Octave)
+            GoToOctave(note.Octave);
+        }
+
+        private void GoToOctave(Octave octave)
+        {
+            while (CurrentOctave != octave)
             {
-                if (CurrentOctave < note.Octave)
+                if (CurrentOctave < octave)
                     IncreaseOctave();
                 else
                     DecreaseOctave();
@@ -71,8 +89,6 @@ namespace Nekres.Musician.Core.Instrument
         protected abstract void IncreaseOctave();
 
         protected abstract void DecreaseOctave();
-
-        public abstract void Dispose();
 
         private Keys GetKeyBinding(GuildWarsControls key)
         {

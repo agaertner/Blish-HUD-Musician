@@ -15,7 +15,6 @@ namespace Nekres.Musician.UI.Views
 {
     internal class LibraryView : View<LibraryPresenter>
     {
-        internal event EventHandler<ValueEventArgs<string>> OnSelectedSortChanged;
         internal event EventHandler<EventArgs> OnImportFromClipboardClick;
 
         private const int TOP_MARGIN = 0;

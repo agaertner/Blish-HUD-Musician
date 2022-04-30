@@ -43,7 +43,6 @@ namespace Nekres.Musician.Core.Player.Algorithms
                     Thread.Sleep(TimeSpan.FromMilliseconds(1));
                 }
             }
-
             MusicianModule.ModuleInstance.MusicPlayer?.Stop();
         }
 

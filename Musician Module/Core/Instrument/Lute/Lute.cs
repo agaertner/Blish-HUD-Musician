@@ -6,9 +6,8 @@ namespace Nekres.Musician.Core.Instrument
 {
     public class Lute : InstrumentBase
     {
-        public Lute()
+        public Lute() : base(Octave.Low, true)
         {
-            this.CurrentOctave = Octave.Low;
         }
 
         protected override NoteBase ConvertNote(RealNote note) => LuteNote.From(note);
@@ -64,9 +63,6 @@ namespace Nekres.Musician.Core.Instrument
             PressKey(GuildWarsControls.UtilitySkill3);
 
             Thread.Sleep(OctaveTimeout);
-        }
-
-        public override void Dispose() {
         }
     }
 }

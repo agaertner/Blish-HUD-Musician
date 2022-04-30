@@ -8,9 +8,8 @@ namespace Nekres.Musician.Core.Instrument
     {
         private readonly ISoundRepository _soundRepository;
 
-        public HarpPreview(ISoundRepository soundRepo)
+        public HarpPreview(ISoundRepository soundRepo) : base(Octave.Middle, true)
         {
-            this.CurrentOctave = Octave.Middle;
             _soundRepository = soundRepo;
         }
 
@@ -82,9 +81,6 @@ namespace Nekres.Musician.Core.Instrument
                 default:
                     throw new ArgumentOutOfRangeException();
             }
-        }
-
-        public override void Dispose() {
         }
     }
 }

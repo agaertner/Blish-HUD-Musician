@@ -3,6 +3,8 @@ using Microsoft.Xna.Framework;
 using Nekres.Musician.Core.Domain;
 using Nekres.Musician.Core.Instrument;
 using System.Diagnostics;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Nekres.Musician.Core.Player.Algorithms
 {
@@ -33,7 +35,7 @@ namespace Nekres.Musician.Core.Player.Algorithms
 
         protected bool CharacterMoved()
         {
-            return MusicianModule.ModuleInstance.stopWhenMoving.Value && !CharacterPosition.Equals(GameService.Gw2Mumble.PlayerCharacter.Position);
+            return !CharacterPosition.Equals(GameService.Gw2Mumble.PlayerCharacter.Position) && !this.Instrument.Walkable;
         }
 
         protected bool CanContinue()

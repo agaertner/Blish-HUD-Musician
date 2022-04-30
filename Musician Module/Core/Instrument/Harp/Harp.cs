@@ -7,9 +7,8 @@ namespace Nekres.Musician.Core.Instrument
 {
     public class Harp : InstrumentBase
     {
-        public Harp() : base(false)
+        public Harp() : base(Octave.Middle, false)
         {
-            this.CurrentOctave = Octave.Middle;
         }
 
         protected override NoteBase ConvertNote(RealNote note) => HarpNote.From(note);
@@ -57,16 +56,12 @@ namespace Nekres.Musician.Core.Instrument
                 case Octave.High:
                     CurrentOctave = Octave.Middle;
                     break;
-                default:
-                    throw new ArgumentOutOfRangeException();
+                default: break;
             }
 
             PressKey(UtilitySkill3);
 
             Thread.Sleep(OctaveTimeout);
-        }
-
-        public override void Dispose() {
         }
     }
 }

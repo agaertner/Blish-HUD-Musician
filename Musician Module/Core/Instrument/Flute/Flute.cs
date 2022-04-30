@@ -6,9 +6,8 @@ namespace Nekres.Musician.Core.Instrument
 {
     public class Flute : InstrumentBase
     {
-        public Flute() : base(false)
+        public Flute() : base(Octave.Low, false)
         {
-            this.CurrentOctave = Octave.Low;
         }
 
         protected override NoteBase ConvertNote(RealNote note) => FluteNote.From(note);
@@ -55,9 +54,6 @@ namespace Nekres.Musician.Core.Instrument
             PressKey(UtilitySkill3);
 
             Thread.Sleep(OctaveTimeout);
-        }
-
-        public override void Dispose() {
         }
     }
 }

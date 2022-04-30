@@ -7,9 +7,8 @@ namespace Nekres.Musician.Core.Instrument
     {
         private readonly ISoundRepository _soundRepository;
 
-        public FlutePreview(ISoundRepository soundRepo)
+        public FlutePreview(ISoundRepository soundRepo) : base(Octave.Low, true)
         {
-            this.CurrentOctave = Octave.Low;
             _soundRepository = soundRepo;
         }
 
@@ -75,9 +74,6 @@ namespace Nekres.Musician.Core.Instrument
                     break;
                 default: break;
             }
-        }
-
-        public override void Dispose() {
         }
     }
 }

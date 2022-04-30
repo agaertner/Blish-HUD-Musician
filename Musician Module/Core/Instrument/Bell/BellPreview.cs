@@ -7,9 +7,8 @@ namespace Nekres.Musician.Core.Instrument
     {
         private readonly ISoundRepository _soundRepository;
 
-        public BellPreview(ISoundRepository soundRepo)
+        public BellPreview(ISoundRepository soundRepo) : base(Octave.Middle, true)
         {
-            this.CurrentOctave = Octave.Middle;
             _soundRepository = soundRepo;
         }
 
@@ -30,13 +29,13 @@ namespace Nekres.Musician.Core.Instrument
 
         protected override void IncreaseOctave()
         {
-            switch (this.CurrentOctave)
+            switch (CurrentOctave)
             {
                 case Octave.Low:
-                    this.CurrentOctave = Octave.Middle;
+                    CurrentOctave = Octave.Middle;
                     break;
                 case Octave.Middle:
-                    this.CurrentOctave = Octave.High;
+                    CurrentOctave = Octave.High;
                     break;
                 case Octave.High:
                     break;
@@ -46,15 +45,15 @@ namespace Nekres.Musician.Core.Instrument
 
         protected override void DecreaseOctave()
         {
-            switch (this.CurrentOctave)
+            switch (CurrentOctave)
             {
                 case Octave.Low:
                     break;
                 case Octave.Middle:
-                    this.CurrentOctave = Octave.Low;
+                    CurrentOctave = Octave.Low;
                     break;
                 case Octave.High:
-                    this.CurrentOctave = Octave.Middle;
+                    CurrentOctave = Octave.Middle;
                     break;
                 default: break;
             }
@@ -64,27 +63,24 @@ namespace Nekres.Musician.Core.Instrument
         {
             switch (key)
             {
-                case GuildWarsControls.WeaponSkill1:
-                case GuildWarsControls.WeaponSkill2:
-                case GuildWarsControls.WeaponSkill3:
-                case GuildWarsControls.WeaponSkill4:
-                case GuildWarsControls.WeaponSkill5:
-                case GuildWarsControls.HealingSkill:
-                case GuildWarsControls.UtilitySkill1:
-                case GuildWarsControls.UtilitySkill2:
-                    MusicianModule.ModuleInstance.MusicPlayer.PlaySound(_soundRepository.Get(key, this.CurrentOctave));
+                case WeaponSkill1:
+                case WeaponSkill2:
+                case WeaponSkill3:
+                case WeaponSkill4:
+                case WeaponSkill5:
+                case HealingSkill:
+                case UtilitySkill1:
+                case UtilitySkill2:
+                    MusicianModule.ModuleInstance.MusicPlayer.PlaySound(_soundRepository.Get(key, CurrentOctave));
                     break;
-                case GuildWarsControls.UtilitySkill3:
+                case UtilitySkill3:
                     DecreaseOctave();
                     break;
-                case GuildWarsControls.EliteSkill:
+                case EliteSkill:
                     IncreaseOctave();
                     break;
                 default: break;
             }
-        }
-
-        public override void Dispose() {
         }
     }
 }
