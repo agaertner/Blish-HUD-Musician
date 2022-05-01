@@ -1,4 +1,5 @@
 ﻿using Blish_HUD;
+using Blish_HUD.Content;
 using Blish_HUD.Controls;
 using Blish_HUD.Graphics.UI;
 using Blish_HUD.Input;
@@ -7,6 +8,7 @@ using Blish_HUD.Modules.Managers;
 using Blish_HUD.Settings;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
+using Nekres.Musician.Core.Models;
 using Nekres.Musician.Core.Player;
 using Nekres.Musician.UI;
 using Nekres.Musician.UI.Models;
@@ -16,8 +18,6 @@ using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Linq;
 using System.Threading.Tasks;
-using Blish_HUD.Content;
-using Nekres.Musician.Core.Models;
 using static Blish_HUD.GameService;
 
 namespace Nekres.Musician
@@ -56,6 +56,7 @@ namespace Nekres.Musician
         // Self Managed
         internal SettingEntry<string> SheetFilter;
         internal SettingEntry<bool> DefaultSheetsImported;
+        internal SettingEntry<float> OctaveOffsetDelay;
         #endregion
 
         private CornerIcon _moduleIcon;
@@ -75,7 +76,13 @@ namespace Nekres.Musician
 
         protected override void DefineSettings(SettingCollection settingsManager)
         {
-            audioVolume = settingsManager.DefineSetting("audioVolume", 80f, () => "Audio Volume");
+            audioVolume = settingsManager.DefineSetting("audioVolume", 80f, 
+                () => "Audio Volume", 
+                () => "Audio volume of this module.");
+            OctaveOffsetDelay = settingsManager.DefineSetting("octaveOffsetDelayMs", 100f, 
+                () => "Speed", 
+                () => "The speed at which instruments are played.\nLeft: slower. Right: faster.\nMin: One second delay. Max: normal speed.");
+
             var skillKeyBindingsCollection = settingsManager.AddSubCollection("Skills", true, false);
             keySwapWeapons = skillKeyBindingsCollection.DefineSetting("keySwapWeapons", new KeyBinding(Keys.OemPipe), () => "Swap Weapons");
             keyWeaponSkill1 = skillKeyBindingsCollection.DefineSetting("keyWeaponSkill1", new KeyBinding(Keys.D1), () => "Weapon Skill 1");
@@ -89,9 +96,11 @@ namespace Nekres.Musician
             keyUtilitySkill3 = skillKeyBindingsCollection.DefineSetting("keyUtilitySkill3", new KeyBinding(Keys.D9), () => "Utility Skill 3");
             keyEliteSkill = skillKeyBindingsCollection.DefineSetting("keyEliteSkill", new KeyBinding(Keys.D0), () => "Elite Skill");
 
+
             var selfManagedSettings = settingsManager.AddSubCollection("selfManaged", false, false);
             SheetFilter = selfManagedSettings.DefineSetting("sheetFilter", "Title");
             DefaultSheetsImported = selfManagedSettings.DefineSetting("defaultSheetsImported", false);
+            //OctaveOffsetDelay = selfManagedSettings.DefineSetting("octaveOffsetDelayMs", 0);
             GameIntegration.Gw2Instance.IsInGameChanged += OnIsInGameChanged;
         }
 

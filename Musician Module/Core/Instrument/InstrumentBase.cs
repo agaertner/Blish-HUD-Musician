@@ -38,7 +38,7 @@ namespace Nekres.Musician.Core.Instrument
         protected virtual void PressKey(GuildWarsControls key)
         {
             Keyboard.Press((VirtualKeyShort)GetKeyBinding(key));
-            Thread.Sleep(TimeSpan.FromMilliseconds(1));
+            Thread.Sleep(TimeSpan.FromMilliseconds(1 + 1000 - MusicianModule.ModuleInstance.OctaveOffsetDelay.Value / 100 * 1000));
             Keyboard.Release((VirtualKeyShort)GetKeyBinding(key));
             Thread.Sleep(this.NoteTimeout);
         }

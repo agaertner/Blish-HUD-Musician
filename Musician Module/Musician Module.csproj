@@ -234,6 +234,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="UI\Controls\IntegerInput.cs" />
     <Compile Include="UI\MusicSheetImporter.cs" />
     <Compile Include="UI\Controls\ClipboardButton.cs" />
     <Compile Include="UI\Models\MusicSheetModel.cs" />
