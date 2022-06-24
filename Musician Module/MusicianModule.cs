@@ -125,7 +125,7 @@ namespace Nekres.Musician
 
         protected override async Task LoadAsync()
         {
-            await MusicSheetService.LoadAsync();
+            MusicSheetService.LoadDatabase();
             this.MusicSheetImporter = new MusicSheetImporter(this.MusicSheetService, GetModuleProgressHandler());
 
             // Load icons

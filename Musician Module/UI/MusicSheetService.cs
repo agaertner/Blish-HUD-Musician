@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
+using LiteDB;
 
 namespace Nekres.Musician.UI
 {
@@ -32,15 +33,13 @@ namespace Nekres.Musician.UI
             this.CacheDir = cacheDir;
         }
 
-        public async Task LoadAsync()
+        public void LoadDatabase()
         {
-            await LoadDatabase();
-        }
-
-        private async Task LoadDatabase()
-        {
-            var filePath = Path.Combine(this.CacheDir, "data.db");
-            _db = new LiteDatabaseAsync(filePath);
+            _db = new LiteDatabaseAsync(new ConnectionString
+            {
+                Filename = Path.Combine(this.CacheDir, "data.db"),
+                Connection = ConnectionType.Shared
+            });
             _ctx = _db.GetCollection<MusicSheetModel>("music_sheets");
         }
 
