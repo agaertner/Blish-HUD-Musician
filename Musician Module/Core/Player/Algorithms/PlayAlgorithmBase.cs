@@ -3,8 +3,6 @@ using Microsoft.Xna.Framework;
 using Nekres.Musician.Core.Domain;
 using Nekres.Musician.Core.Instrument;
 using System.Diagnostics;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace Nekres.Musician.Core.Player.Algorithms
 {

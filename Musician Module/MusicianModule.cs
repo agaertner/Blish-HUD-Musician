@@ -1,12 +1,12 @@
 ﻿using Blish_HUD;
 using Blish_HUD.Content;
 using Blish_HUD.Controls;
-using Blish_HUD.Graphics.UI;
 using Blish_HUD.Input;
 using Blish_HUD.Modules;
 using Blish_HUD.Modules.Managers;
 using Blish_HUD.Settings;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Nekres.Musician.Core.Models;
 using Nekres.Musician.Core.Player;
@@ -18,7 +18,6 @@ using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Linq;
 using System.Threading.Tasks;
-using static Blish_HUD.GameService;
 
 namespace Nekres.Musician
 {
@@ -36,7 +35,6 @@ namespace Nekres.Musician
         internal DirectoriesManager DirectoriesManager => this.ModuleParameters.DirectoriesManager;
         internal Gw2ApiManager Gw2ApiManager => this.ModuleParameters.Gw2ApiManager;
         #endregion
-
 
         #region Settings
 
@@ -60,8 +58,11 @@ namespace Nekres.Musician
         #endregion
 
         private CornerIcon _moduleIcon;
-
+        private Texture2D _moduleIconTex;
+        
         private StandardWindow _moduleWindow;
+        private Texture2D _moduleWindowBackground;
+        private Texture2D _moduleEmblem;
 
         internal MusicPlayer MusicPlayer { get; private set; }
 
@@ -101,18 +102,27 @@ namespace Nekres.Musician
             SheetFilter = selfManagedSettings.DefineSetting("sheetFilter", "Title");
             DefaultSheetsImported = selfManagedSettings.DefineSetting("defaultSheetsImported", false);
             //OctaveOffsetDelay = selfManagedSettings.DefineSetting("octaveOffsetDelayMs", 0);
-            GameIntegration.Gw2Instance.IsInGameChanged += OnIsInGameChanged;
+            GameService.GameIntegration.Gw2Instance.IsInGameChanged += OnIsInGameChanged;
         }
 
         private void OnIsInGameChanged(object o, ValueEventArgs<bool> e)
         {
-            _moduleIcon.Visible = e.Value;
-            if (!e.Value) _moduleWindow?.Hide();
+            if (e.Value)
+            {
+                CreateModuleIcon();
+                return;
+            }
+
+            DisposeModuleIcon();
+            _moduleWindow?.Hide();
         }
 
         protected override void Initialize()
         {
-            _moduleIcon = new CornerIcon(ContentsManager.GetTexture("corner_icon.png"), this.Name);
+            _moduleIconTex = ContentsManager.GetTexture("corner_icon.png");
+            _moduleWindowBackground = ContentsManager.GetTexture("background.png");
+            _moduleEmblem = ContentsManager.GetTexture("musician_icon.png");
+
             MusicSheetService = new MusicSheetService(DirectoriesManager.GetFullDirectoryPath("musician"));
             MusicPlayer = new MusicPlayer();
 
@@ -120,8 +130,6 @@ namespace Nekres.Musician
             foreach (var instrument in Enum.GetValues(typeof(Instrument)).Cast<Instrument>())
                 InstrumentIcons.Add(instrument, new AsyncTexture2D());
         }
-
-        public override IView GetSettingsView() => new CustomSettingsView(new CustomSettingsModel(this.SettingsManager.ModuleSettings));
 
         protected override async Task LoadAsync()
         {
@@ -186,22 +194,45 @@ namespace Nekres.Musician
 
         protected override void OnModuleLoaded(EventArgs e)
         {
-            var windowRegion = new Rectangle(40, 26, 423, 780 - 56);
-            var contentRegion = new Rectangle(70, 41, 380, 780 - 42);
-            _moduleWindow = new StandardWindow(ContentsManager.GetTexture("background.png"), windowRegion, contentRegion)
+            if (GameService.GameIntegration.Gw2Instance.IsInGame)
             {
-                Parent = Graphics.SpriteScreen,
-                Emblem = ContentsManager.GetTexture("musician_icon.png"),
-                Location = new Point((Graphics.SpriteScreen.Width - windowRegion.Width) / 2, (Graphics.SpriteScreen.Height - windowRegion.Height) / 2),
-                SavesPosition = true,
-                Id = Guid.NewGuid().ToString(),
-                Title = this.Name
-            };
+                CreateModuleIcon();
+            }
 
-            _moduleIcon.Click += OnModuleIconClick;
+            CreateModuleWindow();
 
             MusicSheetImporter.Init();
             base.OnModuleLoaded(e);
+        }
+
+        private void CreateModuleIcon()
+        {
+            if (_moduleIcon != null) return;
+            _moduleIcon = new CornerIcon(_moduleIconTex, this.Name);
+            _moduleIcon.Click += OnModuleIconClick;
+        }
+
+        private void DisposeModuleIcon()
+        {
+            if (_moduleIcon == null) return;
+            _moduleIcon.Click -= OnModuleIconClick;
+            _moduleIcon.Dispose();
+            _moduleIcon = null;
+        }
+
+        private void CreateModuleWindow()
+        {
+            var windowRegion = new Rectangle(40, 26, 423, 780 - 56);
+            var contentRegion = new Rectangle(70, 41, 380, 780 - 42);
+            _moduleWindow = new StandardWindow(_moduleWindowBackground, windowRegion, contentRegion)
+            {
+                Parent = GameService.Graphics.SpriteScreen,
+                Emblem = _moduleEmblem,
+                Location = new Point((GameService.Graphics.SpriteScreen.Width - windowRegion.Width) / 2, (GameService.Graphics.SpriteScreen.Height - windowRegion.Height) / 2),
+                SavesPosition = true,
+                Id = $"{this.Name}_Library_2a961a74-4214-4ea1-8e3f-4897b301ced9",
+                Title = this.Name
+            };
         }
 
         private void OnModuleIconClick(object o, MouseEventArgs e)
@@ -211,10 +242,12 @@ namespace Nekres.Musician
 
         protected override void Unload()
         {
-            GameIntegration.Gw2Instance.IsInGameChanged -= OnIsInGameChanged;
-            _moduleIcon.Click -= OnModuleIconClick;
-            _moduleIcon?.Dispose();
+            GameService.GameIntegration.Gw2Instance.IsInGameChanged -= OnIsInGameChanged;
+            DisposeModuleIcon();
             _moduleWindow?.Dispose();
+            _moduleEmblem?.Dispose();
+            _moduleWindowBackground?.Dispose();
+            _moduleIconTex?.Dispose();
             MusicPlayer?.Dispose();
             MusicSheetService?.Dispose();
             MusicSheetImporter?.Dispose();

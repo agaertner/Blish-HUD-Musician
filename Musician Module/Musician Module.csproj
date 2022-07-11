@@ -274,7 +274,6 @@
     <Compile Include="Core\Converters\ChordOffsetConverter.cs" />
     <Compile Include="Core\Converters\MetronomeConverter.cs" />
     <Compile Include="Core\Domain\Fraction.cs" />
-    <Compile Include="UI\Models\CustomSettingsModel.cs" />
     <Compile Include="Core\Domain\Beat.cs" />
     <Compile Include="Core\Domain\Chord.cs" />
     <Compile Include="Core\Domain\ChordOffset.cs" />
@@ -293,13 +292,10 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="UI\Models\LibraryModel.cs" />
-    <Compile Include="UI\Presenters\CustomSettingsPresenter.cs" />
     <Compile Include="UI\Presenters\LibraryPresenter.cs" />
-    <Compile Include="UI\Views\CustomSettingsView.cs" />
     <Compile Include="UI\Views\LibraryView.cs" />
     <Compile Include="_Extensions\DictionaryExtension.cs" />
     <Compile Include="_Extensions\KeyValuePairExtensions.cs" />
-    <Compile Include="_Utils\BrowserUtil.cs" />
     <Compile Include="_Utils\FileUtil.cs" />
   </ItemGroup>
   <ItemGroup>
